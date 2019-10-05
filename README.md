@@ -6,7 +6,9 @@ A file viewer and video editor for TeslaCam
 
 Install
 ======================================
-I have included a precompiled version in the Binary folder for easy install.
+
+# Currently in beta testing, those who have donated will receive an email with a link to the beta version.
+
 
 ### If you have the Tesla FSD Computer(HW3) installed and/or get black videos, then you'll need to install the H.265 codec. 
 
