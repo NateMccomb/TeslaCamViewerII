@@ -1,4 +1,4 @@
-## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded. TeslaCam Viewer 2019.35.5.0 has a fix for this bug, Download it and check out the YouTube Demo on how to use it from the links below.` 
+## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` 
 
 # TeslaCam Viewer II 
 A file viewer and video editor for TeslaCam
