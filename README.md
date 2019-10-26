@@ -1,4 +1,4 @@
-## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded. Using the Re-encode feature will fix these issues` 
+## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Using the Re-encode feature will fix these issues.
 
 # TeslaCam Viewer II 
 A file viewer and video editor for TeslaCam
@@ -25,3 +25,33 @@ Version 2019.43.6.0
 
 
 ## [Feature request or give user feedback here](https://docs.google.com/forms/d/e/1FAIpQLScl0Eg_RRAbHcJf2tBZ42SrP5RkOWo1xrL4O763WsmPCgqXWA/viewform)
+
+
+Features
+--------
+* Allows all TeslaCam cameras to playback in sync based on time of recording
+* Quick access to Sentry Mode triggered events when browsing folders.
+* Custom layout so you can choose the look you like. 
+* Custom folder selection for quick access to archived TeslaCam video files.
+* Checks for software updates posted to GitHub automatically.
+* Quick pre-view of single video files while hovering
+* Adjustable playback speed for quick analysis of triggered Sentry Mode/Manual TeslaCam Events
+* Keyboard shortcuts for all controls.  (See popup when hovering over objects)
+* Auto saved Layout and Custom folder location. 
+          (Settings saved under: %homepath%\AppData\Local\Nate_Mccomb or Search: TeslaCam Viewer.exe.config)
+          
+* Hold shift key while executing application to reset all settings.
+* Join and Export clips in to one file, Save As .mp4 .avi or .gif
+* Flip and/or mirror option for side cameras durring export
+* Trim video clips before saving file
+* Drag & Drop files/folders to add them to the Explorer tree
+* Adjust playback speed of exported video
+* Format drives for Fat32 and add TeslaCam / Viewer to drive
+* Choose or design custom view layouts for viewing / exporting
+* Export / Import custom view layouts
+
+
+Known Bugs
+-------
+* This is a Tesla issue! - Some TeslaCam .mp4 files get corrupt either while they are being saved or within the video itself. Some video playback windows may not populate due to this reason. 
+* If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810) for more info.
