@@ -2,19 +2,20 @@
 
 Updates
 -------------
-Beta Release - 40.6.0
-Added a message option to inform users of new features or options - 42.3.0
-Export! The Export feature is now available - 43.0.0
-Import/Export Layout Settings - 43.5.0
-Choose a custom folder by Address option added - 43.5.0
-Format USB drive as FAT32 plus adds TeslaCam / TeslaCam Viewer - 43.5.0
+
 Added Stats for TeslaCam Viewer II - 43.5.0
+Format USB drive as FAT32 plus adds TeslaCam / TeslaCam Viewer - 43.5.0
+Choose a custom folder by Address option added - 43.5.0
+Import/Export Layout Settings - 43.5.0
+Export! The Export feature is now available - 43.0.0
+Added a message option to inform users of new features or options - 42.3.0
+Beta Release - 40.6.0
 
 …………………………………………………………….
 Bug Fixes 
 -------------
-Fixed minor bugs - 41.6.0
-Fixed a few regional based bugs and addressed some other issues - 42.3.0
 Fixed minor bugs - 43.6.0
+Fixed a few regional based bugs and addressed some other issues - 42.3.0
+Fixed minor bugs - 41.6.0
 
 TeslaCam Viewer is free but please donate!
