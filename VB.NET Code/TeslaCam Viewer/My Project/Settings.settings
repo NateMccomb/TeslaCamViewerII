@@ -1,0 +1,88 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="CustomDIR" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RenderSelection" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="RenderQuality" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="FlipLR" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MirrorLR" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LatestVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NewInstall</Value>
+    </Setting>
+    <Setting Name="UserLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">English</Value>
+    </Setting>
+    <Setting Name="CustomID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserAgreed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AspectRatioList" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserSavedCameraLayouts" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;front|6:3|6:3|30|-1|60|True|10&lt;/string&gt;
+  &lt;string&gt;back|6:3|6:3|32.5|57.2|52|True|13&lt;/string&gt;
+  &lt;string&gt;left_repeater|6:3|6:3|67|51|49|True|16&lt;/string&gt;
+  &lt;string&gt;right_repeater|6:3|6:3|0|51|49|True|19&lt;/string&gt;
+  &lt;string&gt;front|4:3|4:3|19|1|64|True|6&lt;/string&gt;
+  &lt;string&gt;right_repeater|4:3|4:3|0|55|45|True|16&lt;/string&gt;
+  &lt;string&gt;left_repeater|4:3|4:3|55|55|45|True|11&lt;/string&gt;
+  &lt;string&gt;back|4:3|4:3|39|0|22|True|1&lt;/string&gt;
+  &lt;string&gt;left_repeater|All Cameras|16:9|66|56|44|True|16&lt;/string&gt;
+  &lt;string&gt;right_repeater|All Cameras|16:9|0|56|44|True|11&lt;/string&gt;
+  &lt;string&gt;back|All Cameras|16:9|33|60|45|True|6&lt;/string&gt;
+  &lt;string&gt;front|All Cameras|16:9|27|0|61|True|1&lt;/string&gt;
+  &lt;string&gt;front|Full Screen|4:3|0|0|100|True|1&lt;/string&gt;
+  &lt;string&gt;right_repeater|Full Screen|4:3|0|0|100|False|6&lt;/string&gt;
+  &lt;string&gt;left_repeater|Full Screen|4:3|0|0|100|False|11&lt;/string&gt;
+  &lt;string&gt;back|Full Screen|4:3|0|0|100|False|16&lt;/string&gt;
+  &lt;string&gt;back|12:3|12:3|33.3|0|100|False|6&lt;/string&gt;
+  &lt;string&gt;front|12:3|12:3|33.3|0|100|True|1&lt;/string&gt;
+  &lt;string&gt;left_repeater|12:3|12:3|66.6|0|100|True|11&lt;/string&gt;
+  &lt;string&gt;right_repeater|12:3|12:3|0|0|100|True|16&lt;/string&gt;
+  &lt;string&gt;left_repeater|Front &amp;amp; Left Repeater|8:3|0|0|100|True|6&lt;/string&gt;
+  &lt;string&gt;front|Front &amp;amp; Left Repeater|8:3|50|0|100|True|1&lt;/string&gt;
+  &lt;string&gt;right_repeater|Front &amp;amp; Left Repeater|8:3|0|0|100|False|11&lt;/string&gt;
+  &lt;string&gt;back|Front &amp;amp; Left Repeater|8:3|50|0|100|False|16&lt;/string&gt;
+  &lt;string&gt;right_repeater|Front &amp;amp; Right Repeater|8:3|50|0|100|True|6&lt;/string&gt;
+  &lt;string&gt;front|Front &amp;amp; Right Repeater|8:3|0|0|100|True|1&lt;/string&gt;
+  &lt;string&gt;left_repeater|Front &amp;amp; Right Repeater|8:3|50|0|100|False|11&lt;/string&gt;
+  &lt;string&gt;back|Front &amp;amp; Right Repeater|8:3|0|0|100|False|16&lt;/string&gt;
+  &lt;string&gt;left_repeater|Front &amp;amp; Left/Right Repeater|12:3|0|0|100|True|11&lt;/string&gt;
+  &lt;string&gt;back|Front &amp;amp; Left/Right Repeater|12:3|33|0|100|False|16&lt;/string&gt;
+  &lt;string&gt;right_repeater|Front &amp;amp; Left/Right Repeater|12:3|66|0|100|True|6&lt;/string&gt;
+  &lt;string&gt;front|Front &amp;amp; Left/Right Repeater|12:3|33|0|100|True|1&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="LastAspectRatio" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AspectNames" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Message" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MirorBack" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

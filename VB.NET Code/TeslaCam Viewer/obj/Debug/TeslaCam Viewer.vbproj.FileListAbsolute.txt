@@ -1,0 +1,88 @@
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\TeslaCam Viewer.exe
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\TeslaCam Viewer.pdb
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\TeslaCam Viewer.xml
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\Vlc.DotNet.Core.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\Vlc.DotNet.Core.Interops.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\Vlc.DotNet.Forms.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.Resources.resources
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.GenerateResource.cache
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.CoreCompileInputs.cache
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.exe
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.xml
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.pdb
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\Interop.WMPLib.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\AxInterop.WMPLib.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.ResolveComReference.cache
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\Interop.WMPLib.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Nate\Desktop\TeslaCam Viewer.exe
+C:\Users\Nate\Desktop\TeslaCam Viewer.pdb
+C:\Users\Nate\Desktop\TeslaCam Viewer.xml
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.exe
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.pdb
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.xml
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.MainForm.resources
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.exe.config
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.exe.manifest
+C:\Users\Nate\Desktop\TeslaCamViewer\TeslaCam Viewer.application
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.TrustInfo.xml
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.exe.manifest
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.application
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe.config
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe.manifest
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.application
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.pdb
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.xml
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\Interop.WMPLib.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\AxInterop.WMPLib.dll
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\bin\Release\app.config
+C:\Users\Nate\source\repos\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbprojAssemblyReference.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\app.config
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe.config
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe.manifest
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.application
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.exe
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.pdb
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\TeslaCam Viewer.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\Interop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\bin\Release\AxInterop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\Interop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\AxInterop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.ResolveComReference.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.MainForm.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.Resources.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.GenerateResource.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.CoreCompileInputs.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.TrustInfo.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.exe.manifest
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.application
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.exe
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.pdb
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbprojAssemblyReference.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.UserAgreement.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\app.config
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\Interop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\AxInterop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\Interop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\AxInterop.WMPLib.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.ResolveComReference.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.MainForm.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.Resources.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam_Viewer.UserAgreement.resources
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.GenerateResource.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbproj.CoreCompileInputs.cache
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.exe.config
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.exe.manifest
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.application
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.exe
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.pdb
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\TeslaCam Viewer II.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.TrustInfo.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.exe.manifest
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.application
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.exe
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.xml
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.pdb
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbprojAssemblyReference.cache

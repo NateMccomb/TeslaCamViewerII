@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TeslaCam Viewer", "TeslaCam Viewer\TeslaCam Viewer.vbproj", "{EBD91A15-DEA0-4AFF-875D-C3449A58AEE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E9517B5-5ED6-46D1-9A05-C3093353A73E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EBD91A15-DEA0-4AFF-875D-C3449A58AEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD91A15-DEA0-4AFF-875D-C3449A58AEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD91A15-DEA0-4AFF-875D-C3449A58AEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBD91A15-DEA0-4AFF-875D-C3449A58AEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82BAA851-7BFD-4F04-BA62-428F37F551B2}
+	EndGlobalSection
+EndGlobal
