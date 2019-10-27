@@ -1,8 +1,9 @@
-2019.43.6.0
+2019.44.0.0
 
 Updates
 -------------
-
+Added support for moving In/Out Markers - 44.0.0
+Added support for moving Main Event Timeline - 44.0.0
 Added Stats for TeslaCam Viewer II - 43.5.0
 Format USB drive as FAT32 plus adds TeslaCam / TeslaCam Viewer - 43.5.0
 Choose a custom folder by Address option added - 43.5.0
