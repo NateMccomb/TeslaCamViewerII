@@ -14,12 +14,12 @@ Install
 
 ### Help support Nate in making future improvements though PayPal [![Donate](https://github.com/NateMccomb/TeslaCamViewer/raw/master/TeslaCam%20Viewer/Resources/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8UKFUQCU9476N&source=url)
 
-Version 2019.43.6.0 
+Version 2019.44.0.0 
 ======================================
 #### .NET Framework 3.5 must be installed
-## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2019.43.6.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
+## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2019.44.0.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
                     
-## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Standalone-TeslaCamViewer-2019.43.6.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
+## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Standalone-TeslaCamViewer-2019.44.0.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
 
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) ` If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check out` [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810).
 
