@@ -1,9 +1,9 @@
 Welcome to TeslaCam Viewer II!
+TeslaCam Viewer II - 2019.46.5.1
+VLC support has been added to TeslaCam Viewer. 2019.46.5.1 is currently in beta testing and if you would like to test it, please visit GitHub to download a copy.
 
-TeslaCam Viewer II - 2019.46.4.0
-VLC support has been added to TeslaCam Viewer. 2019.46.4.0 is currently in beta testing and if you would like to test it, please visit GitHub to download a copy.
-
-* Due to beta testing, version 2019.46.4.0 will not show up as a new update.
+* Due to beta testing, version 2019.46.4.0 & 46.5.1 will not show up as a new update.
+* Fixed VLC issue causing TeslaCam Viewer to crash - 46.5.1
 
 Now available at:
-https://github.com/NateMccomb/TeslaCamViewerII
+https://www.TeslaCamViewer.com
