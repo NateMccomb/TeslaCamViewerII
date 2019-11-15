@@ -2,6 +2,8 @@
 
 Updates
 -------------
+Added VLC - 46.4.0
+Added Max Thread Count option for re-encoding files - 46.4.0
 Added support for moving In/Out Markers - 44.0.0
 Added support for moving Main Event Timeline - 44.0.0
 Added Stats for TeslaCam Viewer II - 43.5.0
@@ -15,6 +17,7 @@ Beta Release - 40.6.0
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed minor bugs - 46.4.0
 Fixed minor bugs - 43.6.0
 Fixed a few regional based bugs and addressed some other issues - 42.3.0
 Fixed minor bugs - 41.6.0
