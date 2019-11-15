@@ -1,7 +1,9 @@
 Welcome to TeslaCam Viewer II!
 
-TeslaCam Viewer II - 2019.44.0.0
-Now supports moving the In/Out Markers & Main Event Timeline with the mouse.
+TeslaCam Viewer II - 2019.46.4.0
+VLC support has been added to TeslaCam Viewer. 2019.46.4.0 is currently in beta testing and if you would like to test it, please visit GitHub to download a copy.
+
+* Due to beta testing, version 2019.46.4.0 will not show up as a new update.
 
 Now available at:
 https://github.com/NateMccomb/TeslaCamViewerII
