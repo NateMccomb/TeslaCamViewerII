@@ -90,18 +90,31 @@ Public Class MainForm
             Debug_Mode = True
         End If
 
+        If Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\VideoLAN\VLC") IsNot Nothing Then
+            VideoPlayerType.Items.Add("VLC")
+        End If
+        If Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Active Setup\Installed Components\{22d6f312-b0f6-11d0-94ab-0080c74c7e95}") IsNot Nothing Then
+            VideoPlayerType.Items.Add("Windows Media Player")
+        End If
+        If VideoPlayerType.Items.Contains(My.Settings.VideoPlayerType) = True Then
+            VideoPlayerType.Text = My.Settings.VideoPlayerType
+        Else
+            If VideoPlayerType.Items.Count > 0 Then
+                My.Settings.VideoPlayerType = VideoPlayerType.Items.Item(0)
+                VideoPlayerType.Text = VideoPlayerType.Items.Item(0)
+            End If
+        End If
 
 
-
-
-        If My.Settings.AspectRatioList Is Nothing Then
+            If My.Settings.AspectRatioList Is Nothing Then
             Logging("Info - Added Default Layouts")
             My.Settings.AspectRatioList = New Specialized.StringCollection
             My.Settings.AspectNames = New Specialized.StringCollection
-            My.Settings.AspectRatioList.Add("4:3")
-            My.Settings.AspectNames.Add("Full Screen")
+
             My.Settings.AspectRatioList.Add("16:9")
             My.Settings.AspectNames.Add("All Cameras")
+            My.Settings.AspectRatioList.Add("4:3")
+            My.Settings.AspectNames.Add("Full Screen")
             My.Settings.AspectRatioList.Add("12:3")
             My.Settings.AspectNames.Add("Front & Left/Right Repeater")
             My.Settings.AspectRatioList.Add("8:3")
@@ -126,7 +139,7 @@ Public Class MainForm
         '    My.Settings.AspectNames.Add("6:3")
         '    My.Settings.Save()
         'End If
-
+        MaxNumberOfThreads.Text = My.Settings.MaxThreads
         For Each RatioName As String In My.Settings.AspectNames
             AspectName.Items.Add(RatioName)
         Next
@@ -337,9 +350,10 @@ Public Class MainForm
     End Sub
     Public LoadingFiles As Boolean = False
     Public FileChecked As Boolean = False
-
+    Dim QuickStart As Boolean = False
     Private Sub LoadTimesToCurrentTimeList()
         Try
+            QuickStart = False
             For Each control As Control In FileDurations.Controls
                 If control.GetType Is GetType(ListBox) Then
                     Dim FileDuration As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
@@ -348,6 +362,7 @@ Public Class MainForm
             Next
 
             LoadingFiles = True
+            Tv_Explorer.Enabled = False
             Dim DIRLocation As String = FullCenterCameraName
 
             If DIRLocation.Contains(".mp4") Then
@@ -404,7 +419,7 @@ Public Class MainForm
                             Dim Reader As StreamReader
                             Dim FFmpegInfo As String = Nothing
 
-                            p.StartInfo.Arguments = "-i " & Chr(34) & (fi.FullName) & Chr(34)
+                            p.StartInfo.Arguments = "-i " & Chr(34) & (fi.FullName) & Chr(34) & " -preset veryfast -f null"
                             p.Start()
                             p.WaitForExit()
                             Reader = p.StandardError
@@ -428,7 +443,7 @@ Public Class MainForm
                                         Dim MaxDuration As Double = (Int(MaxMin) * 60) + MaxSec '/ playbackSpeed 'text.Remove(text.IndexOf(","), text.Length - text.IndexOf(",")).Remove(0, text.IndexOf(":")).Replace(":", "").Replace(".", "")
 
                                         FileDuration.Items.Item(CurrentTimeCount - 1) = (MaxDuration)
-
+                                        Exit Do
 
                                     Catch ex As Exception
                                         FileDuration.Items.Add("0")
@@ -451,6 +466,12 @@ Public Class MainForm
                                 Dim AlreadyViewed As Boolean = SearchEventList(fi.Name.Remove(fi.Name.LastIndexOf("-")))
                                 If AlreadyViewed = True Then
                                     Viewed = True
+                                End If
+                                If CurrentTimeList.Items.Count > 2 And QuickStart = False Then
+                                    LoadSentryEvent()
+                                    QuickStart = True
+                                    Panel.Refresh()
+
                                 End If
                             End If
                         ElseIf FileSize(fi.FullName) = 595 Then
@@ -494,7 +515,10 @@ Public Class MainForm
 
 
             LoadingFiles = False
+            Tv_Explorer.Enabled = True
+            Tv_Explorer.Focus()
             FilePlayedOnce = False
+
         Catch ex As Exception
             LoadingFiles = False
             If Debug_Mode = True Then
@@ -508,71 +532,139 @@ Public Class MainForm
         Try
 
             Logging("Info - Updating Player Layout")
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
-                    Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
-                    Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
-                    Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
-                    Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
-                    Dim SavedPlayerEnabled As Boolean = False
-                    Dim SavedPlayerSize As Double = -1
-                    Dim SavedPlayerTop As Double = -1
-                    Dim SavedPlayerLeft As Double = -1
-                    Dim zIndex As Integer = -1
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim SavedPlayerEnabled As Boolean = False
+                        Dim SavedPlayerSize As Double = -1
+                        Dim SavedPlayerTop As Double = -1
+                        Dim SavedPlayerLeft As Double = -1
+                        Dim zIndex As Integer = -1
 
-                    Dim ItemFound As Integer = -1
-                    Dim CurrentItem As Integer = 0
-                    SavedLayouts.Text = ""
-                    For Each Item As String In My.Settings.UserSavedCameraLayouts
-                        SavedLayouts.Text += "<string>" & Item.Replace("&", "&amp;") & "</string>" & vbCrLf
-                    Next
+                        Dim ItemFound As Integer = -1
+                        Dim CurrentItem As Integer = 0
+                        SavedLayouts.Text = ""
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
+                            SavedLayouts.Text += "<string>" & Item.Replace("&", "&amp;") & "</string>" & vbCrLf
+                        Next
 
-                    For Each Item As String In My.Settings.UserSavedCameraLayouts
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
 
-                        Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
-                            MyReader.TextFieldType = FileIO.FieldType.Delimited
-                            MyReader.SetDelimiters("|")
+                            Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
+                                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                                MyReader.SetDelimiters("|")
 
-                            Dim Found As Boolean = False
-                            Dim currentRow As String()
-                            While Not MyReader.EndOfData
-                                Try
-                                    currentRow = MyReader.ReadFields()
-                                Catch ex As Exception
-                                End Try
-                            End While
-                            If currentRow.Count > 0 Then
-                                '0[CameraName],1[PanelAspectRatioName],2[PlayerLocationLeftPercentage],3[PlayerLocationTopPercentage],4[PlayerSizePercentage],5[Enabled?],6[zIndex]
-                                If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
-                                    ItemFound = CurrentItem
-                                    SavedPlayerEnabled = currentRow(6)
-                                    SavedPlayerSize = FromNumUS(currentRow(5))
-                                    SavedPlayerTop = FromNumUS(currentRow(4))
-                                    SavedPlayerLeft = FromNumUS(currentRow(3))
-                                    zIndex = currentRow(7)
-                                    Panel.Controls.SetChildIndex(Status, zIndex - 1)
-                                    Panel.Controls.SetChildIndex(Player, zIndex)
+                                Dim Found As Boolean = False
+                                Dim currentRow As String()
+                                While Not MyReader.EndOfData
+                                    Try
+                                        currentRow = MyReader.ReadFields()
+                                    Catch ex As Exception
+                                    End Try
+                                End While
+                                If currentRow.Count > 0 Then
+                                    '0[CameraName],1[PanelAspectRatioName],2[PlayerLocationLeftPercentage],3[PlayerLocationTopPercentage],4[PlayerSizePercentage],5[Enabled?],6[zIndex]
+                                    If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
+                                        ItemFound = CurrentItem
+                                        SavedPlayerEnabled = currentRow(6)
+                                        SavedPlayerSize = FromNumUS(currentRow(5))
+                                        SavedPlayerTop = FromNumUS(currentRow(4))
+                                        SavedPlayerLeft = FromNumUS(currentRow(3))
+                                        zIndex = currentRow(7)
+                                        Panel.Controls.SetChildIndex(Status, zIndex - 1)
+                                        Panel.Controls.SetChildIndex(Player, zIndex)
 
-                                    Player.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
-                                    Player.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
-                                    PlayerTop.Text = SavedPlayerTop
-                                    PlayerLeft.Text = SavedPlayerLeft
-                                    PlayerSize.Text = SavedPlayerSize
-                                    Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
-                                    PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
-                                    Player.Visible = SavedPlayerEnabled
-                                    Status.Location = Player.Location
-                                    Exit For
+                                        Player.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
+                                        Player.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
+                                        PlayerTop.Text = SavedPlayerTop
+                                        PlayerLeft.Text = SavedPlayerLeft
+                                        PlayerSize.Text = SavedPlayerSize
+                                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+                                        PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
+                                        Player.Visible = SavedPlayerEnabled
+                                        Status.Location = Player.Location
+                                        Exit For
+                                    End If
                                 End If
-                            End If
 
-                        End Using
-                        CurrentItem += 1
-                    Next
-                End If
-            Next
+                            End Using
+                            CurrentItem += 1
+                        Next
+                    End If
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim SavedPlayerEnabled As Boolean = False
+                        Dim SavedPlayerSize As Double = -1
+                        Dim SavedPlayerTop As Double = -1
+                        Dim SavedPlayerLeft As Double = -1
+                        Dim zIndex As Integer = -1
+
+                        Dim ItemFound As Integer = -1
+                        Dim CurrentItem As Integer = 0
+                        SavedLayouts.Text = ""
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
+                            SavedLayouts.Text += "<string>" & Item.Replace("&", "&amp;") & "</string>" & vbCrLf
+                        Next
+
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
+
+                            Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
+                                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                                MyReader.SetDelimiters("|")
+
+                                Dim Found As Boolean = False
+                                Dim currentRow As String()
+                                While Not MyReader.EndOfData
+                                    Try
+                                        currentRow = MyReader.ReadFields()
+                                    Catch ex As Exception
+                                    End Try
+                                End While
+                                If currentRow.Count > 0 Then
+                                    '0[CameraName],1[PanelAspectRatioName],2[PlayerLocationLeftPercentage],3[PlayerLocationTopPercentage],4[PlayerSizePercentage],5[Enabled?],6[zIndex]
+                                    If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
+                                        ItemFound = CurrentItem
+                                        SavedPlayerEnabled = currentRow(6)
+                                        SavedPlayerSize = FromNumUS(currentRow(5))
+                                        SavedPlayerTop = FromNumUS(currentRow(4))
+                                        SavedPlayerLeft = FromNumUS(currentRow(3))
+                                        zIndex = currentRow(7)
+                                        Panel.Controls.SetChildIndex(Status, zIndex - 1)
+                                        Panel.Controls.SetChildIndex(Player, zIndex)
+
+                                        Player.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
+                                        Player.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
+                                        PlayerTop.Text = SavedPlayerTop
+                                        PlayerLeft.Text = SavedPlayerLeft
+                                        PlayerSize.Text = SavedPlayerSize
+                                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+                                        PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
+                                        Player.Visible = SavedPlayerEnabled
+                                        Status.Location = Player.Location
+                                        Exit For
+                                    End If
+                                End If
+
+                            End Using
+                            CurrentItem += 1
+                        Next
+                    End If
+                Next
+            End If
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -584,12 +676,12 @@ Public Class MainForm
         Try
             If ExplorerRightClick = False Then
                 PlayersSTOP()
-                CurrentTimeList.Enabled = False
+                GroupBoxCONTROLS.Enabled = False
                 CurrentTimeList.Items.Clear()
                 SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Normal_5050
                 FullCenterCameraName = ""
                 Logging("Info - Explorer Selection - " & e.Node.Tag.ToString)
-                If e.Node.ImageKey.ToString() = "Folder" Or e.Node.ImageKey.ToString().ToLower = ".mp4" Then
+                If (e.Node.ImageKey.ToString() = "Folder" And PREVIEWBox.Visible = False) Or e.Node.ImageKey.ToString().ToLower = ".mp4" Then
                     If e.Node.ImageKey.ToString().ToLower = ".mp4" Then
                         FullCenterCameraName = e.Node.Tag.ToString.Remove(e.Node.Tag.ToString.LastIndexOf("\") + 1)
                         Logging("Info - File Selected - " & e.Node.Tag.ToString)
@@ -597,73 +689,11 @@ Public Class MainForm
                         FullCenterCameraName = e.Node.Tag.ToString & "\"
                         Logging("Info - Folder Selected - " & e.Node.Tag.ToString & "\")
                     End If
-
+                    PlayersSTOP()
                     LoadTimesToCurrentTimeList()
 
-                    Try
-                        'FolderViewing = True
-                        PlayersSTOP()
+                    LoadSentryEvent()
 
-
-                        If CurrentTimeList.Items.Count > 1 Then
-                            CurrentTimeList.SelectedIndex = 1
-                        ElseIf CurrentTimeList.Items.Count = 1 Then
-                            CurrentTimeList.SelectedIndex = 0
-                        End If
-                        Dim Duration As Double = 0
-                        MaxDurationsList.Items.Clear()
-
-                        For Each control As Control In FileDurations.Controls
-                            If control.GetType Is GetType(ListBox) Then
-                                Dim PlayerTimes As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
-                                If PlayerTimes.Items.Count > 1 Then
-                                    If PlayerTimes.Items.Item(0) > Duration Then
-                                        Duration = PlayerTimes.Items.Item(0)
-                                    End If
-                                End If
-                            End If
-                        Next
-                        Dim TotalMaxDuration As Double = 0
-                        Dim EventSentryModeOffset As Double = 0
-                        For i = 0 To CurrentTimeList.Items.Count - 1
-                            Dim MaxDuration As Double = 0
-
-                            For Each control As Control In FileDurations.Controls
-                                If control.GetType Is GetType(ListBox) Then
-                                    Dim PlayerTimes As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
-                                    If PlayerTimes.Items.Item(i) > MaxDuration Then
-                                        MaxDuration = PlayerTimes.Items.Item(i)
-                                    End If
-                                End If
-                            Next
-                            If i > 1 Then
-                                EventSentryModeOffset += MaxDuration
-                            End If
-                            MaxDurationsList.Items.Add(MaxDuration)
-                            TotalMaxDuration += MaxDuration
-                        Next
-                        EventTimeCodeBar.Maximum = TotalMaxDuration * 10
-                        RenderOutTime = EventTimeCodeBar.Maximum
-                        RenderInTime = 0
-                        EventSentryTriggerTime = EventSentryModeOffset
-                        For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.currentPosition = Duration - 2
-                                Player.Visible = True
-                            End If
-                        Next
-                        SentryTriggerTime = Duration
-                        CurrentTimeList.Enabled = True
-                        UpdatePlayersLayout()
-                        UpdatePlayBackSpeed()
-                        EventSentryTriggerTime = EventSentryModeOffset + SentryTriggerTime
-                    Catch ex As Exception
-                        If Debug_Mode = True Then
-                            MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        End If
-                        Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
-                    End Try
                 End If
                 Tv_Explorer.Focus()
             Else
@@ -680,7 +710,99 @@ Public Class MainForm
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
     End Sub
+    Private Sub LoadSentryEvent(Optional ByVal Reload As Boolean = True)
+        Try
+            'FolderViewing = True
 
+
+
+            If CurrentTimeList.Items.Count > 1 Then
+                CurrentTimeList.SelectedIndex = 1
+            ElseIf CurrentTimeList.Items.Count = 1 Then
+                CurrentTimeList.SelectedIndex = 0
+            End If
+            Dim Duration As Double = 0
+            MaxDurationsList.Items.Clear()
+
+            For Each control As Control In FileDurations.Controls
+                If control.GetType Is GetType(ListBox) Then
+                    Dim PlayerTimes As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
+                    If PlayerTimes.Items.Count > 1 Then
+                        If PlayerTimes.Items.Item(0) > Duration Then
+                            Duration = PlayerTimes.Items.Item(0)
+                        End If
+                    End If
+                End If
+            Next
+            Dim TotalMaxDuration As Double = 0
+            Dim EventSentryModeOffset As Double = 0
+            For i = 0 To CurrentTimeList.Items.Count - 1
+                Dim MaxDuration As Double = 0
+
+                For Each control As Control In FileDurations.Controls
+                    If control.GetType Is GetType(ListBox) Then
+                        Dim PlayerTimes As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
+                        If PlayerTimes.Items.Item(i) > MaxDuration Then
+                            MaxDuration = PlayerTimes.Items.Item(i)
+                        End If
+                    End If
+                Next
+                If i > 1 Then
+                    EventSentryModeOffset += MaxDuration
+                End If
+                MaxDurationsList.Items.Add(MaxDuration)
+                TotalMaxDuration += MaxDuration
+            Next
+            EventTimeCodeBar.Maximum = TotalMaxDuration * 10
+            If Reload = True Then
+                RenderOutTime = EventTimeCodeBar.Maximum
+                RenderInTime = 0
+            End If
+            Dim EventOffset As Double = 0
+            For i = CurrentTimeList.SelectedIndex + 1 To CurrentTimeList.Items.Count - 1
+                Dim MaxDuration As Double = 0
+                For Each control As Control In FileDurations.Controls
+                    If control.GetType Is GetType(ListBox) Then
+                        Dim PlayerTimes As ListBox = CType(FileDurations.Controls(control.Name), ListBox)
+                        If FromNumUS(PlayerTimes.Items.Item(i)) > MaxDuration Then
+                            MaxDuration = FromNumUS(PlayerTimes.Items.Item(i))
+                        End If
+                    End If
+                Next
+                EventOffset += MaxDuration
+            Next
+            EventTimeCodeOffset = FromNumUS(EventOffset) * 10
+            EventSentryTriggerTime = EventSentryModeOffset
+            If QuickStart = False Then
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    For Each control As Control In Panel.Controls
+                        If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                            Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                            Player.input.time = (Duration - 2) * 1000
+                        End If
+                    Next
+                Else
+                    For Each control As Control In Panel.Controls
+                        If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                            Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                            Player.Ctlcontrols.currentPosition = Duration - 2
+                            Player.Visible = True
+                        End If
+                    Next
+                End If
+            End If
+            SentryTriggerTime = Duration
+            GroupBoxCONTROLS.Enabled = True
+            UpdatePlayersLayout()
+            UpdatePlayBackSpeed()
+            EventSentryTriggerTime = EventSentryModeOffset + SentryTriggerTime
+        Catch ex As Exception
+            If Debug_Mode = True Then
+                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
     Private Sub AddSpecialFolderRootNode(SpecialFolder As SpecialNodeFolders)
         Dim SpecialFolderPath As String = Environment.GetFolderPath(CType(SpecialFolder, Environment.SpecialFolder))
         Dim SpecialFolderName As String = Path.GetFileName(SpecialFolderPath)
@@ -840,32 +962,69 @@ Public Class MainForm
         Recent = Environment.SpecialFolder.Recent
         UserProfile = Environment.SpecialFolder.Personal
     End Enum
-
+    Private Enum InputState
+        IDLE = 0
+        OPENING = 1
+        BUFFERING = 2
+        PLAYING = 3
+        PAUSED = 4
+        STOPPING = 5
+        ENDED = 6
+        ERRORSTATE = 7
+    End Enum
     Private Sub RefreshPlayers()
-        For Each control As Control In Panel.Controls
-            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                If Player.playState = WMPLib.WMPPlayState.wmppsPaused Then
-                    Player.Ctlcontrols.play()
-                    Player.Ctlcontrols.pause()
+        If My.Settings.VideoPlayerType = "VLC" Then
+            For Each control As Control In Panel.Controls
+                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                    Dim state As InputState = DirectCast(Player.input.state, InputState)
+
+                    If state = InputState.PAUSED Then
+                        Player.playlist.play()
+                        Player.playlist.pause()
+                    End If
                 End If
-            End If
-        Next
+            Next
+        Else
+            For Each control As Control In Panel.Controls
+                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                    If Player.playState = WMPLib.WMPPlayState.wmppsPaused Then
+                        Player.Ctlcontrols.play()
+                        Player.Ctlcontrols.pause()
+                    End If
+                End If
+            Next
+        End If
     End Sub
     Private Sub TrackBar1_Scroll(sender As Object, e As EventArgs) Handles TimeCodeBar.Scroll
-        If Not IsNothing(Panel.Controls(CurrentTimeMaxPlayer)) Then
-            Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
-            Player.Ctlcontrols.currentPosition = TimeCodeBar.Value / 10
-        End If
-        For Each control As Control In Panel.Controls
-            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                If Player.Name <> CurrentTimeMaxPlayer Then
-                    Player.Ctlcontrols.currentPosition = TimeCodeBar.Value / 10
-                End If
+        If My.Settings.VideoPlayerType = "VLC" Then
+            If Not IsNothing(Panel.Controls(CurrentTimeMaxPlayer)) Then
+                Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(CurrentTimeMaxPlayer), AxAXVLC.AxVLCPlugin2)
+                Player.input.time = TimeCodeBar.Value * 100
             End If
-        Next
-
+            For Each control As Control In Panel.Controls
+                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                    If Player.Name <> CurrentTimeMaxPlayer Then
+                        Player.input.time = TimeCodeBar.Value * 100
+                    End If
+                End If
+            Next
+        Else
+            If Not IsNothing(Panel.Controls(CurrentTimeMaxPlayer)) Then
+                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
+                Player.Ctlcontrols.currentPosition = TimeCodeBar.Value / 10
+            End If
+            For Each control As Control In Panel.Controls
+                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                    If Player.Name <> CurrentTimeMaxPlayer Then
+                        Player.Ctlcontrols.currentPosition = TimeCodeBar.Value / 10
+                    End If
+                End If
+            Next
+        End If
         RefreshPlayers()
 
     End Sub
@@ -916,11 +1075,29 @@ Public Class MainForm
     Dim PlayerToFront As Boolean = False
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Try
+
             If LoadingFiles = True Then
                 AnalyzingFilesLabel.BringToFront()
                 AnalyzingFilesLabel.Visible = True
             Else
                 AnalyzingFilesLabel.Visible = False
+            End If
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Dim state As InputState = DirectCast(Player.input.state, InputState)
+                        Dim Status As Label = CType(Panel.Controls(Player.Name & "-Status"), Label)
+                        If Status.Text.Contains(state.ToString) = False Then
+                            VLCPlayerChangedState(Player.Name)
+                            Player.Refresh()
+                        End If
+                        If VLCReverse = True And Player.input.time > 500 Then
+                            Player.input.time -= 500
+                        End If
+                    End If
+                Next
+
             End If
             If Debug_Mode = True Then
                 If OneSec.Enabled = True Then
@@ -938,7 +1115,7 @@ Public Class MainForm
                 SentryModeMarker.Visible = False
             End If
             If CurrentTimeList.Items.Count > 0 Then
-                EventSentryModeMarker.Left = (((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum) * ((EventSentryTriggerTime + 1) * 10)) + 10
+                EventSentryModeMarker.Left = (((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum) * ((EventSentryTriggerTime + 2) * 10)) + 10
                 EventSentryModeMarker.Visible = True
 
 
@@ -961,40 +1138,80 @@ Public Class MainForm
 
                 If Elapsed_time.TotalMilliseconds > 200 Then
                     SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(MovePlayer), AxWindowsMediaPlayer)
-                    If PlayerFullScreen = "" Then
-                        Dim Status As Label = CType(Panel.Controls(MovePlayer & "-Status"), Label)
-                        Dim Location As Point = Panel.MousePosition - Me.Location - Panel.Location
-                        Player.Location = Location - MovePlayerMousePos - New Point(14, 34) '31
-                        Status.Location = New Point(Player.Left, Player.Top)
+                    If My.Settings.VideoPlayerType = "VLC" Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(MovePlayer), AxAXVLC.AxVLCPlugin2)
+                        If PlayerFullScreen = "" Then
+                            Dim Status As Label = CType(Panel.Controls(MovePlayer & "-Status"), Label)
+                            Dim Location As Point = Panel.MousePosition - Me.Location - Panel.Location
+                            If Location.Y < Panel.Height And Location.Y > 20 And Location.X < Panel.Width - 20 And Location.X > 20 Then
+                                Player.Location = Location - MovePlayerMousePos - New Point(14, 34) '31
+                                Status.Location = New Point(Player.Left, Player.Top)
 
-                        Dim PlayerSize As Label = CType(Panel.Controls(MovePlayer & "-Size"), Label)
-                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                                Dim PlayerSize As Label = CType(Panel.Controls(MovePlayer & "-Size"), Label)
+                                PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
 
-                        Dim PlayerTop As Label = CType(Panel.Controls(MovePlayer & "-Top"), Label)
-                        PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
-                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                                Dim PlayerTop As Label = CType(Panel.Controls(MovePlayer & "-Top"), Label)
+                                PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+                                PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
 
-                        Dim PlayerLeft As Label = CType(Panel.Controls(MovePlayer & "-Left"), Label)
-                        PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
-                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
-                        If PlayerToFront = False Then
-                            PlayerToFront = True
-                            Player.BringToFront()
-                            Status.BringToFront()
+                                Dim PlayerLeft As Label = CType(Panel.Controls(MovePlayer & "-Left"), Label)
+                                PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+                                PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                                If PlayerToFront = False Then
+                                    PlayerToFront = True
+                                    Player.BringToFront()
+                                    Status.BringToFront()
 
-                            PlayerTop.ForeColor = Color.White
-                            PlayerLeft.ForeColor = Color.White
-                            PlayerSize.ForeColor = Color.White
-                            PlayerTop.Visible = True
-                            PlayerLeft.Visible = True
-                            PlayerSize.Visible = True
-                            PlayerTop.BringToFront()
-                            PlayerLeft.BringToFront()
-                            PlayerSize.BringToFront()
+                                    PlayerTop.ForeColor = Color.White
+                                    PlayerLeft.ForeColor = Color.White
+                                    PlayerSize.ForeColor = Color.White
+                                    PlayerTop.Visible = True
+                                    PlayerLeft.Visible = True
+                                    PlayerSize.Visible = True
+                                    PlayerTop.BringToFront()
+                                    PlayerLeft.BringToFront()
+                                    PlayerSize.BringToFront()
+                                End If
+                            End If
+                        End If
+                    Else
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(MovePlayer), AxWindowsMediaPlayer)
+                        If PlayerFullScreen = "" Then
+                            Dim Status As Label = CType(Panel.Controls(MovePlayer & "-Status"), Label)
+                            Dim Location As Point = Panel.MousePosition - Me.Location - Panel.Location
+                            If Location.Y < Panel.Height And Location.Y > 20 And Location.X < Panel.Width - 20 And Location.X > 20 Then
+                                Player.Location = Location - MovePlayerMousePos - New Point(14, 34) '31
+                                Status.Location = New Point(Player.Left, Player.Top)
+
+                                Dim PlayerSize As Label = CType(Panel.Controls(MovePlayer & "-Size"), Label)
+                                PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+
+                                Dim PlayerTop As Label = CType(Panel.Controls(MovePlayer & "-Top"), Label)
+                                PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+                                PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+
+                                Dim PlayerLeft As Label = CType(Panel.Controls(MovePlayer & "-Left"), Label)
+                                PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+                                PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                                If PlayerToFront = False Then
+                                    PlayerToFront = True
+                                    Player.BringToFront()
+                                    Status.BringToFront()
+
+                                    PlayerTop.ForeColor = Color.White
+                                    PlayerLeft.ForeColor = Color.White
+                                    PlayerSize.ForeColor = Color.White
+                                    PlayerTop.Visible = True
+                                    PlayerLeft.Visible = True
+                                    PlayerSize.Visible = True
+                                    PlayerTop.BringToFront()
+                                    PlayerLeft.BringToFront()
+                                    PlayerSize.BringToFront()
+                                End If
+                            End If
                         End If
                     End If
-                    End If
+                End If
             End If
 
             If ResizePlayer <> "" Then
@@ -1002,96 +1219,191 @@ Public Class MainForm
                 Dim Elapsed_time As TimeSpan = CurrentTime.Subtract(PlayerClickTime)
                 If Elapsed_time.TotalMilliseconds > 200 Then
                     SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(ResizePlayer), AxWindowsMediaPlayer)
-                    If PlayerFullScreen = "" Then
-                        Dim Status As Label = CType(Panel.Controls(ResizePlayer & "-Status"), Label)
-                        Dim MouseLocation As Point = ResizePlayerMousePos - Panel.MousePosition + Panel.Location '- Panel.Location - Me.Location
+                    If My.Settings.VideoPlayerType = "VLC" Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(ResizePlayer), AxAXVLC.AxVLCPlugin2)
+                        If PlayerFullScreen = "" Then
+                            Dim Status As Label = CType(Panel.Controls(ResizePlayer & "-Status"), Label)
+                            Dim MouseLocation As Point = ResizePlayerMousePos - Panel.MousePosition + Panel.Location '- Panel.Location - Me.Location
 
-                        Dim NewSize As Point = ResizePlayerStartSize
-                        Dim NewLocation As Point = ResizePlayerStartLocation
+                            Dim NewSize As Point = ResizePlayerStartSize
+                            Dim NewLocation As Point = ResizePlayerStartLocation
 
-                        Select Case ResizePlayerMouseQuarter
-                            Case 1
-                                'good
-                                NewSize = ResizePlayerStartSize + New Point(MouseLocation.X, MouseLocation.Y)
-                                NewLocation = New Point(ResizePlayerStartLocation.X - MouseLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
-                                If NewSize.X / 4 > NewSize.Y / 3 Then
-                                    NewSize.X = (NewSize.Y / 3) * 4
-                                Else
-                                    NewSize.Y = (NewSize.X / 4) * 3
-                                End If
-                                NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y - (NewSize.Y - ResizePlayerStartSize.Y))
-                                Panel.Cursor = Cursors.PanNW
-                            Case 2
-                                'good
-                                NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X, ResizePlayerStartSize.Y + MouseLocation.Y)
-                                NewLocation = New Point(ResizePlayerStartLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
+                            Select Case ResizePlayerMouseQuarter
+                                Case 1
+                                    'good
+                                    NewSize = ResizePlayerStartSize + New Point(MouseLocation.X, MouseLocation.Y)
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - MouseLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    Else
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y - (NewSize.Y - ResizePlayerStartSize.Y))
+                                    Panel.Cursor = Cursors.PanNW
+                                Case 2
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X, ResizePlayerStartSize.Y + MouseLocation.Y)
+                                    NewLocation = New Point(ResizePlayerStartLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
 
-                                If NewSize.X / 4 > NewSize.Y / 3 Then
-                                    NewSize.X = (NewSize.Y / 3) * 4
-                                End If
-                                If NewSize.X / 4 < NewSize.Y / 3 Then
-                                    NewSize.X = (NewSize.Y / 3) * 4
-                                End If
-                                Panel.Cursor = Cursors.PanNE
-                            Case 3
-                                'good
-                                NewSize = New Point(ResizePlayerStartSize.X + MouseLocation.X, ResizePlayerStartSize.Y - MouseLocation.Y)
-                                If NewSize.X / 4 > NewSize.Y / 3 Then
-                                    NewSize.X = (NewSize.Y / 3) * 4
-                                Else
-                                    NewSize.Y = (NewSize.X / 4) * 3
-                                End If
-                                NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y)
-                                Panel.Cursor = Cursors.PanSW
-                            Case 4
-                                'good
-                                NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X + Panel.Left, ResizePlayerStartSize.Y - MouseLocation.Y + Panel.Top)
-                                'NewSize = ResizePlayerStartSize - New Point(MouseLocation.X, MouseLocation.Y)
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    If NewSize.X / 4 < NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    Panel.Cursor = Cursors.PanNE
+                                Case 3
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X + MouseLocation.X, ResizePlayerStartSize.Y - MouseLocation.Y)
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    Else
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y)
+                                    Panel.Cursor = Cursors.PanSW
+                                Case 4
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X + Panel.Left, ResizePlayerStartSize.Y - MouseLocation.Y + Panel.Top)
+                                    'NewSize = ResizePlayerStartSize - New Point(MouseLocation.X, MouseLocation.Y)
 
-                                If NewSize.X / 4 > NewSize.Y / 3 Then
-                                    NewSize.X = (NewSize.Y / 3) * 4
-                                End If
-                                If NewSize.X / 4 < NewSize.Y / 3 Then
-                                    NewSize.Y = (NewSize.X / 4) * 3
-                                End If
-                                Panel.Cursor = Cursors.PanSE
-                        End Select
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    If NewSize.X / 4 < NewSize.Y / 3 Then
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    Panel.Cursor = Cursors.PanSE
+                            End Select
 
-                        'NewLocation = New Point(NewLocation.X, NewLocation.Y)
-
-
-                        NewSize = New Point(NewSize.X, NewSize.Y)
-                        Player.Size = NewSize
-                        Dim PlayerSize As Label = CType(Panel.Controls(ResizePlayer & "-Size"), Label)
-                        PlayerSize.Text = Decimal.Round(((Player.Height / Panel.Height) * 100), 0, MidpointRounding.AwayFromZero)
-
-                        Dim PlayerTop As Label = CType(Panel.Controls(ResizePlayer & "-Top"), Label)
-                        PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
-
-                        Dim PlayerLeft As Label = CType(Panel.Controls(ResizePlayer & "-Left"), Label)
-                        PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+                            'NewLocation = New Point(NewLocation.X, NewLocation.Y)
 
 
-                        Player.Location = New Point(NewLocation.X, NewLocation.Y)
-                        Status.Location = New Point(Player.Left, Player.Top)
-                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
-                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
-                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
-                        If PlayerToFront = False Then
-                            PlayerToFront = True
-                            Player.BringToFront()
-                            Status.BringToFront()
+                            NewSize = New Point(NewSize.X, NewSize.Y)
+                            Player.Size = NewSize
+                            Dim PlayerSize As Label = CType(Panel.Controls(ResizePlayer & "-Size"), Label)
+                            PlayerSize.Text = Decimal.Round(((Player.Height / Panel.Height) * 100), 0, MidpointRounding.AwayFromZero)
 
-                            PlayerTop.ForeColor = Color.White
-                            PlayerLeft.ForeColor = Color.White
-                            PlayerSize.ForeColor = Color.White
-                            PlayerTop.Visible = True
-                            PlayerLeft.Visible = True
-                            PlayerSize.Visible = True
-                            PlayerTop.BringToFront()
-                            PlayerLeft.BringToFront()
-                            PlayerSize.BringToFront()
+                            Dim PlayerTop As Label = CType(Panel.Controls(ResizePlayer & "-Top"), Label)
+                            PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+
+                            Dim PlayerLeft As Label = CType(Panel.Controls(ResizePlayer & "-Left"), Label)
+                            PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+
+
+                            Player.Location = New Point(NewLocation.X, NewLocation.Y)
+                            Status.Location = New Point(Player.Left, Player.Top)
+                            PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                            PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                            PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                            If PlayerToFront = False Then
+                                PlayerToFront = True
+                                Player.BringToFront()
+                                Status.BringToFront()
+
+                                PlayerTop.ForeColor = Color.White
+                                PlayerLeft.ForeColor = Color.White
+                                PlayerSize.ForeColor = Color.White
+                                PlayerTop.Visible = True
+                                PlayerLeft.Visible = True
+                                PlayerSize.Visible = True
+                                PlayerTop.BringToFront()
+                                PlayerLeft.BringToFront()
+                                PlayerSize.BringToFront()
+                            End If
+                        End If
+                    Else
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(ResizePlayer), AxWindowsMediaPlayer)
+                        If PlayerFullScreen = "" Then
+                            Dim Status As Label = CType(Panel.Controls(ResizePlayer & "-Status"), Label)
+                            Dim MouseLocation As Point = ResizePlayerMousePos - Panel.MousePosition + Panel.Location '- Panel.Location - Me.Location
+
+                            Dim NewSize As Point = ResizePlayerStartSize
+                            Dim NewLocation As Point = ResizePlayerStartLocation
+
+                            Select Case ResizePlayerMouseQuarter
+                                Case 1
+                                    'good
+                                    NewSize = ResizePlayerStartSize + New Point(MouseLocation.X, MouseLocation.Y)
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - MouseLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    Else
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y - (NewSize.Y - ResizePlayerStartSize.Y))
+                                    Panel.Cursor = Cursors.PanNW
+                                Case 2
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X, ResizePlayerStartSize.Y + MouseLocation.Y)
+                                    NewLocation = New Point(ResizePlayerStartLocation.X, ResizePlayerStartLocation.Y - MouseLocation.Y)
+
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    If NewSize.X / 4 < NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    Panel.Cursor = Cursors.PanNE
+                                Case 3
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X + MouseLocation.X, ResizePlayerStartSize.Y - MouseLocation.Y)
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    Else
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    NewLocation = New Point(ResizePlayerStartLocation.X - (NewSize.X - ResizePlayerStartSize.X), ResizePlayerStartLocation.Y)
+                                    Panel.Cursor = Cursors.PanSW
+                                Case 4
+                                    'good
+                                    NewSize = New Point(ResizePlayerStartSize.X - MouseLocation.X + Panel.Left, ResizePlayerStartSize.Y - MouseLocation.Y + Panel.Top)
+                                    'NewSize = ResizePlayerStartSize - New Point(MouseLocation.X, MouseLocation.Y)
+
+                                    If NewSize.X / 4 > NewSize.Y / 3 Then
+                                        NewSize.X = (NewSize.Y / 3) * 4
+                                    End If
+                                    If NewSize.X / 4 < NewSize.Y / 3 Then
+                                        NewSize.Y = (NewSize.X / 4) * 3
+                                    End If
+                                    Panel.Cursor = Cursors.PanSE
+                            End Select
+
+                            'NewLocation = New Point(NewLocation.X, NewLocation.Y)
+
+
+                            NewSize = New Point(NewSize.X, NewSize.Y)
+                            Player.Size = NewSize
+                            Dim PlayerSize As Label = CType(Panel.Controls(ResizePlayer & "-Size"), Label)
+                            PlayerSize.Text = Decimal.Round(((Player.Height / Panel.Height) * 100), 0, MidpointRounding.AwayFromZero)
+
+                            Dim PlayerTop As Label = CType(Panel.Controls(ResizePlayer & "-Top"), Label)
+                            PlayerTop.Text = Decimal.Round(((Player.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+
+                            Dim PlayerLeft As Label = CType(Panel.Controls(ResizePlayer & "-Left"), Label)
+                            PlayerLeft.Text = Decimal.Round(((Player.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+
+
+                            Player.Location = New Point(NewLocation.X, NewLocation.Y)
+                            Status.Location = New Point(Player.Left, Player.Top)
+                            PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                            PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                            PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                            If PlayerToFront = False Then
+                                PlayerToFront = True
+                                Player.BringToFront()
+                                Status.BringToFront()
+
+                                PlayerTop.ForeColor = Color.White
+                                PlayerLeft.ForeColor = Color.White
+                                PlayerSize.ForeColor = Color.White
+                                PlayerTop.Visible = True
+                                PlayerLeft.Visible = True
+                                PlayerSize.Visible = True
+                                PlayerTop.BringToFront()
+                                PlayerLeft.BringToFront()
+                                PlayerSize.BringToFront()
+                            End If
                         End If
                     End If
                 End If
@@ -1108,21 +1420,46 @@ Public Class MainForm
                 Dim PlayerMin As Double = 0
                 Dim playerSec As Double = 0
                 If Not IsNothing(Panel.Controls(CurrentTimeMaxPlayer)) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
-                    If Player.Ctlcontrols.currentPosition * 10 > 599 Then
-                        Dim TempTime As Double = Player.Ctlcontrols.currentPosition
-                        For i = 1 To TempTime / 60
-                            PlayerMin += 1
-                            TempTime -= 60
-                        Next
-                        playerSec = TempTime
-                    Else
+                    If My.Settings.VideoPlayerType = "VLC" Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(CurrentTimeMaxPlayer), AxAXVLC.AxVLCPlugin2)
 
-                        playerSec = Player.Ctlcontrols.currentPosition
+                        If Player.input.time / 1000 > 599 Then
+                            Dim TempTime As Double = Player.input.time / 1000
+                            For i = 1 To TempTime / 60
+                                PlayerMin += 1
+                                TempTime -= 60
+                            Next
+                            playerSec = TempTime
+                        Else
+
+                            playerSec = Player.input.time / 1000
+                        End If
+                        MainPlayerTimecode.Text = PlayerMin.ToString("00") & ":" & playerSec.ToString("00.00")
+                        TimeCodeBar.Value = Player.input.time / 100
+                        If EventTimeMove = False Then
+                            EventTimeCodeBar.Value = EventTimeCodeOffset + TimeCodeBar.Value
+                            'EventSentryTriggerTime = EventTimeCodeBar.Value / 10 + 2
+                        End If
+                    Else
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
+                        If Player.Ctlcontrols.currentPosition * 10 > 599 Then
+                            Dim TempTime As Double = Player.Ctlcontrols.currentPosition
+                            For i = 1 To TempTime / 60
+                                PlayerMin += 1
+                                TempTime -= 60
+                            Next
+                            playerSec = TempTime
+                        Else
+
+                            playerSec = Player.Ctlcontrols.currentPosition
+                        End If
+                        MainPlayerTimecode.Text = PlayerMin.ToString("00") & ":" & playerSec.ToString("00.00")
+                        TimeCodeBar.Value = Player.Ctlcontrols.currentPosition * 10
+                        If EventTimeMove = False Then
+                            EventTimeCodeBar.Value = EventTimeCodeOffset + TimeCodeBar.Value
+                            'EventSentryTriggerTime = EventTimeCodeBar.Value / 10 + 2
+                        End If
                     End If
-                    MainPlayerTimecode.Text = PlayerMin.ToString("00") & ":" & playerSec.ToString("00.00")
-                    TimeCodeBar.Value = Player.Ctlcontrols.currentPosition * 10
-                    EventTimeCodeBar.Value = EventTimeCodeOffset + TimeCodeBar.Value
                 End If
 
             Catch ex As Exception
@@ -1144,12 +1481,14 @@ Public Class MainForm
             Dim PlayerCount As Integer = 0
 
             For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    If Player.Name = CurrentTimeMaxPlayer Then
-                        If Player.playState = WMPLib.WMPPlayState.wmppsPlaying Or Player.playState = WMPLib.WMPPlayState.wmppsScanForward Then
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        'If Player.Name = CurrentTimeMaxPlayer Then
+                        Dim state As InputState = DirectCast(Player.input.state, InputState)
+                        If state = InputState.PLAYING Then
                             Try
-                                AvgFPS = AvgFPS + Int(Player.network.frameRate) / 100
+                                AvgFPS = AvgFPS + Player.input.fps
                                 PlayerCount += 1
                             Catch ex As Exception
                                 'If Debug_Mode = True Then
@@ -1157,6 +1496,24 @@ Public Class MainForm
                                 'End If
                                 Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
                             End Try
+                        End If
+                        'End If
+                    End If
+                Else
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        If Player.Name = CurrentTimeMaxPlayer Then
+                            If Player.playState = WMPLib.WMPPlayState.wmppsPlaying Or Player.playState = WMPLib.WMPPlayState.wmppsScanForward Then
+                                Try
+                                    AvgFPS = AvgFPS + Int(Player.network.frameRate) / 100
+                                    PlayerCount += 1
+                                Catch ex As Exception
+                                    'If Debug_Mode = True Then
+                                    '    MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    'End If
+                                    Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+                                End Try
+                            End If
                         End If
                     End If
                 End If
@@ -1167,7 +1524,7 @@ Public Class MainForm
                 CurrentPlayedFPS = 0
             End If
             CurrentFPS.Text = CurrentPlayedFPS.ToString("00.00") & " FPS"
-            If CurrentPlayedFPS = LastPlayedFPS And CurrentPlayedFPS <> 0 Then
+            If CurrentPlayedFPS = LastPlayedFPS And CurrentPlayedFPS <> 0 And VideoPlayerType.Text <> "VLC" Then
                 FPSstopCount += 1
                 If FPSstopCount = 50 Then
                     CurrentFPS.BackColor = Color.Red
@@ -1238,21 +1595,90 @@ Public Class MainForm
             RenderTotalTimeLabel.Text = TotalTimeMin.ToString("00") & ":" & TotalTimeSec.ToString("00.00")
 
             If Not IsNothing(Panel.Controls(CurrentTimeMaxPlayer)) Then
-                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
+                If My.Settings.VideoPlayerType = "VLC" Then
 
-                If (EventTimeCodeOffset + (Player.Ctlcontrols.currentPosition * 10)) > 599 Then
-                    Dim TempTime As Double = (EventTimeCodeOffset / 10) + Player.Ctlcontrols.currentPosition
-                    For i = 1 To TempTime / 60
-                        TotalPlayerMin += 1
-                        TempTime -= 60
-                    Next
-                    TotalplayerSec = TempTime
+                    Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(CurrentTimeMaxPlayer), AxAXVLC.AxVLCPlugin2)
+
+                    If (EventTimeCodeOffset + (VLCPlayer.input.time / 100)) > 599 Then
+                        Dim TempTime As Double = (EventTimeCodeOffset / 10) + (VLCPlayer.input.time / 1000)
+                        For i = 1 To TempTime / 60
+                            TotalPlayerMin += 1
+                            TempTime -= 60
+                        Next
+                        TotalplayerSec = TempTime
+                    Else
+                        'StartMin = 0
+                        TotalplayerSec = (EventTimeCodeOffset / 10) + (VLCPlayer.input.time / 1000)
+                    End If
                 Else
-                    'StartMin = 0
-                    TotalplayerSec = (EventTimeCodeOffset / 10) + Player.Ctlcontrols.currentPosition
+                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(CurrentTimeMaxPlayer), AxWindowsMediaPlayer)
+
+                    If (EventTimeCodeOffset + (Player.Ctlcontrols.currentPosition * 10)) > 599 Then
+                        Dim TempTime As Double = (EventTimeCodeOffset / 10) + Player.Ctlcontrols.currentPosition
+                        For i = 1 To TempTime / 60
+                            TotalPlayerMin += 1
+                            TempTime -= 60
+                        Next
+                        TotalplayerSec = TempTime
+                    Else
+                        'StartMin = 0
+                        TotalplayerSec = (EventTimeCodeOffset / 10) + Player.Ctlcontrols.currentPosition
+                    End If
                 End If
+
             End If
             RenderPlayerTimecode.Text = TotalPlayerMin.ToString("00") & ":" & TotalplayerSec.ToString("00.00")
+
+
+            Try
+                If FixTeslaCamGroupBox.Visible = True Then
+                    Dim CurrentProcessCount As Integer = 0
+                    For Each PRunning As Process In System.Diagnostics.Process.GetProcessesByName("ffmpeg")
+                        'PRunning.Kill()
+                        CurrentProcessCount += 1
+                    Next
+                    If FixTeslaCamQueue.Count <> 0 And CurrentProcessCount < My.Settings.MaxThreads Then
+                        StartFixTeslaCamFiles()
+                    End If
+
+                    If FixedTeslaCamFileCount <> 0 Or CurrentProcessCount > 0 Then
+                        FixTeslaCamProgressBar.Maximum = FixedTeslaCamFileCount
+                        FixTeslaCamProgressBar.Value = FixedTeslaCamFileCount - FixedTeslaCamFileNotDone
+
+
+                        FixingNumFilesLabel.Text = FixedTeslaCamFileCount & " Files Selected, " & CurrentProcessCount & " Being Converted, " & FixedTeslaCamFileCount - FixedTeslaCamFileNotDone & " Complete"
+
+                        If FixedTeslaCamFileNotDone = 0 Then
+                            FixedTeslaCamFileCount = 0
+                        End If
+                        FixTeslaCamTimePosted = False
+                    Else
+
+                        If FixTeslaCamTimePosted = False Then
+                            FixTeslaCamBtnDone.Text = "Done"
+                            FixTeslaCamBtnDone.Enabled = True
+                            FixingNumFilesLabel.Text = "Done"
+                            FixTeslaCamEnd = DateTime.Now
+                            Dim Elapsed_time As TimeSpan = FixTeslaCamEnd.Subtract(FixTeslaCamStart)
+                            FixTeslaCamTimePosted = True
+                            Dim TotalMin As Integer = Elapsed_time.Minutes
+                            If Elapsed_time.Hours > 0 Then
+                                TotalMin += Elapsed_time.Hours * 60
+                            End If
+
+                            FixTeslaCamUpdateTextBox("Took " & TotalMin.ToString("00") & ":" & Elapsed_time.Seconds.ToString("00") & "." & Elapsed_time.Milliseconds.ToString("000"))
+                        End If
+                    End If
+                End If
+            Catch ex As Exception
+
+            End Try
+
+
+
+
+
+
 
         Catch ex As Exception
             If Debug_Mode = True Then
@@ -1262,6 +1688,8 @@ Public Class MainForm
         End Try
     End Sub
 
+    Dim FixTeslaCamTimePosted As Boolean = True
+    Dim FixTeslaCamEnd As DateTime
     Private Sub TrackBar2_Scroll(sender As Object, e As EventArgs) Handles TrackBar2.Scroll
         UpdatePlayBackSpeed()
 
@@ -1269,10 +1697,19 @@ Public Class MainForm
     Private Sub UpdatePlayBackSpeed()
         Try
             For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    If Player.Visible = True Then
-                        Player.settings.rate = 0.1 * TrackBar2.Value
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        If Player.Visible = True Then
+                            Player.input.rate = 0.1 * TrackBar2.Value
+                        End If
+                    End If
+                Else
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        If Player.Visible = True Then
+                            Player.settings.rate = 0.1 * TrackBar2.Value
+                        End If
                     End If
                 End If
             Next
@@ -1335,114 +1772,234 @@ Public Class MainForm
                     End Using
                     CurrentItem += 1
                 Next
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    Dim VLCPlayer As New AxAXVLC.AxVLCPlugin2
+                    VLCPlayer.Name = PlayerName
+                    VLCPlayer.Location = New Point(Int(((Panel.Width - 200) * Rnd()) + 30), Int(((Panel.Height - 300) * Rnd()) + 30))
 
-                Dim NewPlayer As New AxWMPLib.AxWindowsMediaPlayer
-                NewPlayer.Name = PlayerName
-                NewPlayer.Location = New Point(Int(((Panel.Width - 200) * Rnd()) + 30), Int(((Panel.Height - 300) * Rnd()) + 30))
-                'NewPlayer.Left = Int(((Panel.Width) * Rnd()) + 3)
 
-                NewPlayer.Size = New Size(200, 200)
+                    'NewPlayer.Left = Int(((Panel.Width) * Rnd()) + 3)
 
-                If ItemFound <> -1 Then
-                    NewPlayer.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
-                    NewPlayer.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
-                End If
+                    VLCPlayer.Size = New Size(200, 200)
 
-                Dim PlayerTop As New Label
-                PlayerTop.Name = PlayerName & "-Top"
-                PlayerTop.Text = Decimal.Round(((NewPlayer.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
-                PlayerTop.Location = New Point(NewPlayer.Left, NewPlayer.Top + 15)
-                PlayerTop.Size = New Size(40, 14)
-                PlayerTop.Visible = Debug_Mode
-                Panel.Controls.Add(PlayerTop)
+                    If ItemFound <> -1 Then
+                        VLCPlayer.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
+                        VLCPlayer.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
+                    End If
 
-                Dim PlayerLeft As New Label
-                PlayerLeft.Name = PlayerName & "-Left"
-                PlayerLeft.Text = Decimal.Round(((NewPlayer.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
-                PlayerLeft.Location = New Point(NewPlayer.Left, NewPlayer.Top + 30)
-                PlayerLeft.Size = New Size(40, 14)
-                PlayerLeft.Visible = Debug_Mode
-                Panel.Controls.Add(PlayerLeft)
+                    Dim PlayerTop As New Label
+                    PlayerTop.Name = PlayerName & "-Top"
+                    PlayerTop.Text = Decimal.Round(((VLCPlayer.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+                    PlayerTop.Location = New Point(VLCPlayer.Left, VLCPlayer.Top + 15)
+                    PlayerTop.Size = New Size(40, 14)
+                    PlayerTop.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerTop)
 
-                Dim PlayerSize As New Label
-                PlayerSize.Name = PlayerName & "-Size"
-                If ItemFound <> -1 Then
-                    PlayerSize.Text = SavedPlayerSize
+                    Dim PlayerLeft As New Label
+                    PlayerLeft.Name = PlayerName & "-Left"
+                    PlayerLeft.Text = Decimal.Round(((VLCPlayer.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+                    PlayerLeft.Location = New Point(VLCPlayer.Left, VLCPlayer.Top + 30)
+                    PlayerLeft.Size = New Size(40, 14)
+                    PlayerLeft.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerLeft)
+
+                    Dim PlayerSize As New Label
+                    PlayerSize.Name = PlayerName & "-Size"
+                    If ItemFound <> -1 Then
+                        PlayerSize.Text = SavedPlayerSize
+                    Else
+                        PlayerSize.Text = "50"
+                    End If
+                    PlayerSize.Location = New Point(VLCPlayer.Left, VLCPlayer.Top + 45)
+                    PlayerSize.Size = New Size(40, 14)
+                    PlayerSize.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerSize)
+
+                    AddHandler PlayerTop.MouseUp, AddressOf PlayerStatusMouseUp
+                    AddHandler PlayerLeft.MouseUp, AddressOf PlayerStatusMouseUp
+                    AddHandler PlayerSize.MouseUp, AddressOf PlayerStatusMouseUp
+
+                    Panel.Controls.Add(VLCPlayer)
+                    MainToolTip.SetToolTip(VLCPlayer, "Left Click-Hold To Move Camera" & vbCrLf &
+                                                      "Right Click-Hold To Resize Corner Of Camera") ' & vbCrLf &
+                    '"Double Right-Click To Full Screen Camera In Layout")
+
+                    VLCPlayer.FullscreenEnabled = False
+                    VLCPlayer.CtlVisible = False
+                    VLCPlayer.AutoLoop = False
+                    VLCPlayer.AutoPlay = False
+                    VLCPlayer.Toolbar = False
+
+
+                    Dim PlayerDirInfo As New ListBox
+                    PlayerDirInfo.Size = New Size(50, 50)
+                    PlayerDirInfo.Name = PlayerName
+                    FileDurations.Controls.Add(PlayerDirInfo)
+                    If Debug_Mode = False Then
+                        FileDurations.Visible = False
+                    Else
+                        FileDurations.Visible = True
+                    End If
+
+                    VLCPlayer.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+
+                    'AddHandler VLCPlayer.MediaPlayerEndReached, AddressOf VLCPlayerChangedState
+                    'AddHandler VLCPlayer.MediaPlayerPlaying, AddressOf VLCPlayerChangedState
+                    AddHandler VLCPlayer.MouseDownEvent, AddressOf VLCPlayerMouseDown
+                    AddHandler VLCPlayer.MouseUpEvent, AddressOf VLCPlayerMouseUP
+                    'AddHandler VLCPlayer.DblClick, AddressOf VLCPlayerDoubleClick
+
+                    Dim StatusLabel As New Label
+                    StatusLabel.Name = VLCPlayer.Name & "-Status"
+                    StatusLabel.Location = New Point(VLCPlayer.Left, VLCPlayer.Top)
+                    StatusLabel.Size = New Point(20, 12)
+                    Panel.Controls.Add(StatusLabel)
+                    StatusLabel.Text = " "
+                    StatusLabel.AutoSize = True
+                    StatusLabel.BackColor = Color.Black
+                    StatusLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
+                    'StatusLabel.Opacity = 0
+
+                    AddHandler StatusLabel.MouseDown, AddressOf PlayerStatusMouseDown
+                    AddHandler StatusLabel.MouseUp, AddressOf PlayerStatusMouseUp
+
+                    Dim PlayerEnabledCheckBox As New CheckBox
+                    PlayerEnabledCheckBox.Name = VLCPlayer.Name
+                    PlayerEnabledCheckBox.Text = VLCPlayer.Name.Chars(0).ToString.ToUpper & VLCPlayer.Name.Replace("_", " ").Remove(0, 1)
+                    PlayerEnabledCheckBox.AutoSize = False
+                    PlayerEnabledCheckBox.Size = New Size(95, 16)
+                    If ItemFound <> -1 Then
+                        PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
+                        VLCPlayer.Visible = SavedPlayerEnabled
+                    Else
+                        PlayerEnabledCheckBox.Checked = True
+                        VLCPlayer.Visible = True
+                    End If
+
+                    'PlayerEnabledCheckBox.TextAlign = ContentAlignment.TopCenter
+                    PlayerEnabledCheckBox.Font = PlayersEnabledPanel.Font
+                    PlayersEnabledPanel.AutoScroll = False
+                    PlayersEnabledPanel.HorizontalScroll.Visible = False
+                    PlayersEnabledPanel.Controls.Add(PlayerEnabledCheckBox)
+
+                    MainToolTip.SetToolTip(PlayerEnabledCheckBox, "Enable/Disable camera in layout")
+
+                    If ItemFound <> -1 Then
+                        Panel.Controls.SetChildIndex(VLCPlayer, zIndex)
+                    End If
                 Else
-                    PlayerSize.Text = "50"
+                    Dim NewPlayer As New AxWMPLib.AxWindowsMediaPlayer
+                    NewPlayer.Name = PlayerName
+                    NewPlayer.Location = New Point(Int(((Panel.Width - 200) * Rnd()) + 30), Int(((Panel.Height - 300) * Rnd()) + 30))
+                    'NewPlayer.Left = Int(((Panel.Width) * Rnd()) + 3)
+
+                    NewPlayer.Size = New Size(200, 200)
+                    If ItemFound <> -1 Then
+                        NewPlayer.Top = (SavedPlayerTop / 100) * Panel.Height '((NewPlayer.Top / Panel.Height) * 100)
+                        NewPlayer.Left = (SavedPlayerLeft / 100) * Panel.Width '((NewPlayer.Left / Panel.Width) * 100)
+                    End If
+
+                    Dim PlayerTop As New Label
+                    PlayerTop.Name = PlayerName & "-Top"
+                    PlayerTop.Text = Decimal.Round(((NewPlayer.Top / Panel.Height) * 100), 1, MidpointRounding.AwayFromZero)
+                    PlayerTop.Location = New Point(NewPlayer.Left, NewPlayer.Top + 15)
+                    PlayerTop.Size = New Size(40, 14)
+                    PlayerTop.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerTop)
+
+                    Dim PlayerLeft As New Label
+                    PlayerLeft.Name = PlayerName & "-Left"
+                    PlayerLeft.Text = Decimal.Round(((NewPlayer.Left / Panel.Width) * 100), 1, MidpointRounding.AwayFromZero)
+                    PlayerLeft.Location = New Point(NewPlayer.Left, NewPlayer.Top + 30)
+                    PlayerLeft.Size = New Size(40, 14)
+                    PlayerLeft.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerLeft)
+
+                    Dim PlayerSize As New Label
+                    PlayerSize.Name = PlayerName & "-Size"
+                    If ItemFound <> -1 Then
+                        PlayerSize.Text = SavedPlayerSize
+                    Else
+                        PlayerSize.Text = "50"
+                    End If
+                    PlayerSize.Location = New Point(NewPlayer.Left, NewPlayer.Top + 45)
+                    PlayerSize.Size = New Size(40, 14)
+                    PlayerSize.Visible = Debug_Mode
+                    Panel.Controls.Add(PlayerSize)
+
+                    AddHandler PlayerTop.MouseUp, AddressOf PlayerStatusMouseUp
+                    AddHandler PlayerLeft.MouseUp, AddressOf PlayerStatusMouseUp
+                    AddHandler PlayerSize.MouseUp, AddressOf PlayerStatusMouseUp
+
+                    Panel.Controls.Add(NewPlayer)
+                    MainToolTip.SetToolTip(NewPlayer, "Left Click-Hold To Move Camera" & vbCrLf &
+                                                      "Right Click-Hold To Resize Corner Of Camera" & vbCrLf &
+                                                      "Double Right-Click To Full Screen Camera In Layout")
+                    NewPlayer.uiMode = "none"
+                    NewPlayer.Ctlenabled = False
+                    NewPlayer.enableContextMenu = False
+
+                    Dim PlayerDirInfo As New ListBox
+                    PlayerDirInfo.Size = New Size(50, 50)
+                    PlayerDirInfo.Name = PlayerName
+                    FileDurations.Controls.Add(PlayerDirInfo)
+                    If Debug_Mode = False Then
+                        FileDurations.Visible = False
+                    Else
+                        FileDurations.Visible = True
+                    End If
+
+                    NewPlayer.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+
+                    AddHandler NewPlayer.PlayStateChange, AddressOf PlayerChangedState
+                    AddHandler NewPlayer.MouseDownEvent, AddressOf PlayerMouseDown
+                    AddHandler NewPlayer.MouseUpEvent, AddressOf PlayerMouseUP
+                    AddHandler NewPlayer.DoubleClickEvent, AddressOf PlayerDoubleClick
+
+                    Dim StatusLabel As New Label
+                    StatusLabel.Name = NewPlayer.Name & "-Status"
+                    StatusLabel.Location = New Point(NewPlayer.Left, NewPlayer.Top)
+                    StatusLabel.Size = New Point(20, 12)
+                    Panel.Controls.Add(StatusLabel)
+                    StatusLabel.Text = " "
+                    StatusLabel.AutoSize = True
+                    StatusLabel.BackColor = Color.Black
+                    StatusLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
+                    'StatusLabel.Opacity = 0
+
+                    AddHandler StatusLabel.MouseDown, AddressOf PlayerStatusMouseDown
+                    AddHandler StatusLabel.MouseUp, AddressOf PlayerStatusMouseUp
+
+                    Dim PlayerEnabledCheckBox As New CheckBox
+                    PlayerEnabledCheckBox.Name = NewPlayer.Name
+                    PlayerEnabledCheckBox.Text = NewPlayer.Name.Chars(0).ToString.ToUpper & NewPlayer.Name.Replace("_", " ").Remove(0, 1)
+                    PlayerEnabledCheckBox.AutoSize = False
+                    PlayerEnabledCheckBox.Size = New Size(95, 16)
+                    If ItemFound <> -1 Then
+                        PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
+                        NewPlayer.Visible = SavedPlayerEnabled
+                    Else
+                        PlayerEnabledCheckBox.Checked = True
+                        NewPlayer.Visible = True
+                    End If
+
+                    'PlayerEnabledCheckBox.TextAlign = ContentAlignment.TopCenter
+                    PlayerEnabledCheckBox.Font = PlayersEnabledPanel.Font
+                    PlayersEnabledPanel.AutoScroll = False
+                    PlayersEnabledPanel.HorizontalScroll.Visible = False
+                    PlayersEnabledPanel.Controls.Add(PlayerEnabledCheckBox)
+
+                    MainToolTip.SetToolTip(PlayerEnabledCheckBox, "Enable/Disable camera in layout")
+
+                    If ItemFound <> -1 Then
+                        Panel.Controls.SetChildIndex(NewPlayer, zIndex)
+                    End If
+
                 End If
-                PlayerSize.Location = New Point(NewPlayer.Left, NewPlayer.Top + 45)
-                PlayerSize.Size = New Size(40, 14)
-                PlayerSize.Visible = Debug_Mode
-                Panel.Controls.Add(PlayerSize)
 
-                AddHandler PlayerTop.MouseUp, AddressOf PlayerStatusMouseUp
-                AddHandler PlayerLeft.MouseUp, AddressOf PlayerStatusMouseUp
-                AddHandler PlayerSize.MouseUp, AddressOf PlayerStatusMouseUp
 
-                Panel.Controls.Add(NewPlayer)
-                MainToolTip.SetToolTip(NewPlayer, "Left Click-Hold To Move Camera" & vbCrLf &
-                                                  "Right Click-Hold To Resize Corner Of Camera" & vbCrLf &
-                                                  "Double Right-Click To Full Screen Camera In Layout")
-                NewPlayer.uiMode = "none"
-                NewPlayer.Ctlenabled = False
-                NewPlayer.enableContextMenu = False
 
-                Dim PlayerDirInfo As New ListBox
-                PlayerDirInfo.Size = New Size(50, 50)
-                PlayerDirInfo.Name = PlayerName
-                FileDurations.Controls.Add(PlayerDirInfo)
-                If Debug_Mode = False Then
-                    FileDurations.Visible = False
-                Else
-                    FileDurations.Visible = True
-                End If
 
-                NewPlayer.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
-
-                AddHandler NewPlayer.PlayStateChange, AddressOf PlayerChangedState
-                AddHandler NewPlayer.MouseDownEvent, AddressOf PlayerMouseDown
-                AddHandler NewPlayer.MouseUpEvent, AddressOf PlayerMouseUP
-                AddHandler NewPlayer.DoubleClickEvent, AddressOf PlayerDoubleClick
-
-                Dim StatusLabel As New Label
-                StatusLabel.Name = NewPlayer.Name & "-Status"
-                StatusLabel.Location = New Point(NewPlayer.Left, NewPlayer.Top)
-                StatusLabel.Size = New Point(20, 12)
-                Panel.Controls.Add(StatusLabel)
-                StatusLabel.Text = " "
-                StatusLabel.AutoSize = True
-                StatusLabel.BackColor = Color.Black
-                StatusLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
-                'StatusLabel.Opacity = 0
-
-                AddHandler StatusLabel.MouseDown, AddressOf PlayerStatusMouseDown
-                AddHandler StatusLabel.MouseUp, AddressOf PlayerStatusMouseUp
-
-                Dim PlayerEnabledCheckBox As New CheckBox
-                PlayerEnabledCheckBox.Name = NewPlayer.Name
-                PlayerEnabledCheckBox.Text = NewPlayer.Name.Chars(0).ToString.ToUpper & NewPlayer.Name.Replace("_", " ").Remove(0, 1)
-                PlayerEnabledCheckBox.AutoSize = False
-                PlayerEnabledCheckBox.Size = New Size(95, 16)
-                If ItemFound <> -1 Then
-                    PlayerEnabledCheckBox.Checked = SavedPlayerEnabled
-                    NewPlayer.Visible = SavedPlayerEnabled
-                Else
-                    PlayerEnabledCheckBox.Checked = True
-                    NewPlayer.Visible = True
-                End If
-
-                'PlayerEnabledCheckBox.TextAlign = ContentAlignment.TopCenter
-                PlayerEnabledCheckBox.Font = PlayersEnabledPanel.Font
-                PlayersEnabledPanel.AutoScroll = False
-                PlayersEnabledPanel.HorizontalScroll.Visible = False
-                PlayersEnabledPanel.Controls.Add(PlayerEnabledCheckBox)
-
-                MainToolTip.SetToolTip(PlayerEnabledCheckBox, "Enable/Disable camera in layout")
-
-                If ItemFound <> -1 Then
-                    Panel.Controls.SetChildIndex(NewPlayer, zIndex)
-                End If
 
             End If
         Catch ex As Exception
@@ -1503,8 +2060,76 @@ Public Class MainForm
             End If
         End If
     End Sub
+    Public Sub VLCPlayerMouseDown(sender As Object, e As AxAXVLC.DVLCEvents_MouseDownEvent)
+
+        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(sender.Name), AxAXVLC.AxVLCPlugin2)
+        If Player.video.fullscreen = False Then
+            Dim PlayerXY As Point = Panel.MousePosition - Player.Location - Me.Location - Panel.Location - New Point(14, 34)
+
+            If e.button = 2 Then ' right
+                'Resize
+                MovePlayer = ""
+                PlayerClickTime = DateTime.Now
+                ResizePlayer = Player.Name
+                ResizePlayerMousePos = Panel.MousePosition
+                ResizePlayerStartSize = Player.Size
+                ResizePlayerStartLocation = Player.Location
+
+                Logging("Info - Resizing Player: " & Player.Name)
+
+                If PlayerXY.Y < Player.Height / 2 Then
+                    If PlayerXY.X < Player.Width / 2 Then
+                        ResizePlayerMouseQuarter = 1
+                    Else
+                        ResizePlayerMouseQuarter = 2
+                    End If
+                Else
+                    If PlayerXY.X < Player.Width / 2 Then
+                        ResizePlayerMouseQuarter = 3
+                    Else
+                        ResizePlayerMouseQuarter = 4
+                    End If
+                End If
+            ElseIf e.button = 1 Then ' left
+                Logging("Info - Moving Player: " & Player.Name)
+                ResizePlayer = ""
+                PlayerClickTime = DateTime.Now
+                MovePlayer = Player.Name
+                MovePlayerMousePos = PlayerXY
+            End If
+        End If
+    End Sub
     Public Sub PlayerDoubleClick(sender As Object, e As _WMPOCXEvents_DoubleClickEvent)
         Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(sender.Name), AxWindowsMediaPlayer)
+        Player.BringToFront()
+        PlayerClickTime = DateTime.Now
+        If Player.Size = Panel.Size Then
+            Logging("Info - Returning Player from Full Screen: " & Player.Name)
+            Dim PlayerSize As Label = CType(Panel.Controls(Player.Name & "-Size"), Label)
+            Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+
+            Dim PlayerTop As Label = CType(Panel.Controls(Player.Name & "-Top"), Label)
+            Dim PlayerLeft As Label = CType(Panel.Controls(Player.Name & "-Left"), Label)
+            Player.Left = Panel.Width / (100 / PlayerLeft.Text)
+            Player.Top = Panel.Height / (100 / PlayerTop.Text)
+            Dim Status As Label = CType(Panel.Controls(Player.Name & "-Status"), Label)
+            Status.Location = New Point(Player.Left, Player.Top)
+            Status.BringToFront()
+            PlayerFullScreen = ""
+
+        Else
+            Logging("Info - Full Screen Player: " & Player.Name)
+
+            Player.Size = Panel.Size
+            Player.Location = New Point(0, 0)
+            Dim Status As Label = CType(Panel.Controls(Player.Name & "-Status"), Label)
+            Status.Location = New Point(Player.Left, Player.Top)
+            Status.BringToFront()
+            PlayerFullScreen = Player.Name
+        End If
+    End Sub
+    Public Sub VLCPlayerDoubleClick(sender As Object, e As AxAXVLC.DVLCEvents_MouseUpEvent)
+        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(sender.Name), AxAXVLC.AxVLCPlugin2)
         Player.BringToFront()
         PlayerClickTime = DateTime.Now
         If Player.Size = Panel.Size Then
@@ -1538,22 +2163,123 @@ Public Class MainForm
         PlayerClickTime = DateTime.Now
 
     End Sub
+    Public Sub VLCPlayerMouseUP(sender As Object, e As AxAXVLC.DVLCEvents_MouseUpEvent)
+        ResizePlayer = ""
+        MovePlayer = ""
+        PlayerClickTime = DateTime.Now
+
+    End Sub
     Public Sub PlayerStatusMouseUp(sender As Object, e As MouseEventArgs)
         ResizePlayer = ""
         MovePlayer = ""
         PlayerClickTime = DateTime.Now
     End Sub
     Public Sub PlayerStatusMouseDown(sender As Object, e As MouseEventArgs)
-        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(sender.name.ToString.Replace("-Status", "")), AxWindowsMediaPlayer)
-        ResizePlayer = ""
-        PlayerClickTime = DateTime.Now
-        MovePlayer = Player.Name
-        Dim PlayerXY As Point = Panel.MousePosition - Player.Location - Me.Location - New Point(14, 34) - Panel.Location
-        MovePlayerMousePos = PlayerXY
+        If My.Settings.VideoPlayerType = "VLC" Then
+            Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(sender.name.ToString.Replace("-Status", "")), AxAXVLC.AxVLCPlugin2)
+            ResizePlayer = ""
+            PlayerClickTime = DateTime.Now
+            MovePlayer = Player.Name
+            Dim PlayerXY As Point = Panel.MousePosition - Player.Location - Me.Location - New Point(14, 34) - Panel.Location
+            MovePlayerMousePos = PlayerXY
+        Else
+            Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(sender.name.ToString.Replace("-Status", "")), AxWindowsMediaPlayer)
+            ResizePlayer = ""
+            PlayerClickTime = DateTime.Now
+            MovePlayer = Player.Name
+            Dim PlayerXY As Point = Panel.MousePosition - Player.Location - Me.Location - New Point(14, 34) - Panel.Location
+            MovePlayerMousePos = PlayerXY
+        End If
+
 
 
     End Sub
+    Dim PlayerLastState As InputState = InputState.ERRORSTATE
+    Public Sub VLCPlayerChangedState(PlayerName As String)
+        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(PlayerName), AxAXVLC.AxVLCPlugin2)
+        Dim state As InputState = DirectCast(Player.input.state, InputState)
+        Dim Status As Label = CType(Panel.Controls(PlayerName & "-Status"), Label)
+        Status.Text = Player.Name & " - " & state.ToString  'URL.ToString.Remove(0, PlayerCenter.URL.ToString.LastIndexOf("\") + 1)
 
+        MainToolTip.SetToolTip(Status, state.ToString)
+        'Status.BringToFront()
+        Logging("Info - " & PlayerName & " Playstate Changed " & state.ToString)
+        If state = InputState.PLAYING Then
+
+            'CenterPlayerMissing.Visible = False
+            Status.ForeColor = Color.Lime
+            UpdatePlayBackSpeed()
+
+            If CurrentTimeList.Items.Count = 1 Then
+                Player.AutoLoop = True
+            Else
+                Player.AutoLoop = False
+            End If
+            If Tv_Explorer.Focused = False Then
+                CurrentTimeList.Focus()
+            End If
+            Try
+                'For Each time In CurrentTimeList.Items 'VLCPlayer.playlist
+                '    If Player.mediaDescription.url.ToString.Remove(0, Player.mediaDescription.url.ToString.LastIndexOf("\")).Contains("_" & time.ToString.Replace(":", "-")) And CurrentTimeList.SelectedItem <> time.ToString.Replace("-", ":") Then
+                '        If CurrentTimeList.SelectedItem <> time.ToString.Replace("-", ":") Then
+                '            CurrentTimeList.SelectedIndex = -1
+                '            CurrentTimeList.SelectedItem = time.ToString.Replace("-", ":")
+                '        End If
+                '    End If
+                'Next
+            Catch ex As Exception
+            End Try
+
+            If CurrentTimeList.SelectedIndex < 3 Then
+                CurrentTimeList.TopIndex = 0
+            Else
+                CurrentTimeList.TopIndex = CurrentTimeList.SelectedIndex - 2
+            End If
+
+        ElseIf state = InputState.STOPPING Then
+            Status.ForeColor = Color.Red
+            If FolderViewing = True And FilePlayedOnce = True Then
+                FilePlayedOnce = False
+            End If
+
+        ElseIf state = InputState.ENDED Then
+            If CurrentTimeMaxPlayer = Player.Name Then
+                If CurrentTimeList.Items.Count > 1 And EventTimeMove = False Then
+
+                    'PlayersSTOP()
+                    If CurrentTimeList.SelectedIndex = 0 Then
+                        CurrentTimeList.SelectedIndices.Clear()
+                        CurrentTimeList.SelectedIndex = CurrentTimeList.Items.Count - 1
+                    Else
+                        Dim LastIndex As Integer = CurrentTimeList.SelectedIndex
+                        CurrentTimeList.SelectedIndices.Clear()
+                        CurrentTimeList.SelectedIndex = LastIndex - 1
+                    End If
+                End If
+            End If
+
+        ElseIf state = InputState.PAUSED Then
+            Status.ForeColor = Me.BackColor
+            UpdatePlayBackSpeed()
+        ElseIf state = InputState.IDLE Then
+            'If Player.URL <> "" Then
+            'Player.Ctlcontrols.play()
+            'Else
+            'CenterPlayerMissing.Visible = True
+            Logging("Info - Front Camera - File is missing or corrupt")
+            'End If
+            Status.ForeColor = Color.LightGray
+        ElseIf state = InputState.BUFFERING Then
+            Status.ForeColor = Color.Gray
+
+        Else
+            Status.ForeColor = Color.DarkRed
+            'Status.Text = Player.Name & " - " & Player.URL.ToString.Remove(0, Player.URL.ToString.LastIndexOf("\") + 1) & " --- ERROR ---"
+            'CenterPlayerMissing.Visible = True
+        End If
+        Languages.FrontCamera()
+
+    End Sub
 
     Public Sub PlayerChangedState(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent)
         Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(sender.Name), AxWindowsMediaPlayer)
@@ -1604,7 +2330,8 @@ Public Class MainForm
 
         ElseIf Player.playState = WMPLib.WMPPlayState.wmppsMediaEnded Then
             If CurrentTimeMaxPlayer = Player.Name Then
-                If CurrentTimeList.Items.Count > 1 Then
+                If CurrentTimeList.Items.Count > 1 And EventTimeMove = False Then
+
                     PlayersSTOP()
                     If CurrentTimeList.SelectedIndex = 0 Then
                         CurrentTimeList.SelectedIndices.Clear()
@@ -1655,12 +2382,21 @@ Public Class MainForm
     Private Sub PlayersPAUSE()
         Try
             UpdatePlayBackSpeed()
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Player.Ctlcontrols.pause()
-                End If
-            Next
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Player.playlist.pause()
+                    End If
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Player.Ctlcontrols.pause()
+                    End If
+                Next
+            End If
             Logging("Info - Players Paused")
         Catch ex As Exception
             If Debug_Mode = True Then
@@ -1673,29 +2409,55 @@ Public Class MainForm
         Try
             Dim AnyPlayerPlaying As Boolean = False
             Logging("Info - Players Play")
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    If Player.playState = WMPLib.WMPPlayState.wmppsPlaying Or Player.playState = WMPLib.WMPPlayState.wmppsScanForward Or Player.playState = WMPLib.WMPPlayState.wmppsScanReverse Then
-                        AnyPlayerPlaying = True
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Dim state As InputState = DirectCast(Player.input.state, InputState)
+                        If state = InputState.PLAYING Then
+                            AnyPlayerPlaying = True
+                        End If
+                        'Player.Ctlcontrols.play()
                     End If
-                    'Player.Ctlcontrols.play()
-                End If
-            Next
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    If AnyPlayerPlaying = True Then
-                        Player.Ctlcontrols.pause()
-                        Player.settings.rate = 1
-                        Player.Ctlcontrols.play()
-                        Player.Ctlcontrols.pause()
-                    Else
-                        Player.Ctlcontrols.play()
+                Next
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        If AnyPlayerPlaying = True Then
+
+                            Player.playlist.play()
+                            Player.playlist.pause()
+                        Else
+                            Player.playlist.play()
+                        End If
+                        '
                     End If
-                    '
-                End If
-            Next
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        If Player.playState = WMPLib.WMPPlayState.wmppsPlaying Or Player.playState = WMPLib.WMPPlayState.wmppsScanForward Or Player.playState = WMPLib.WMPPlayState.wmppsScanReverse Then
+                            AnyPlayerPlaying = True
+                        End If
+                        'Player.Ctlcontrols.play()
+                    End If
+                Next
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        If AnyPlayerPlaying = True Then
+                            Player.Ctlcontrols.pause()
+                            Player.settings.rate = 1
+                            Player.Ctlcontrols.play()
+                            Player.Ctlcontrols.pause()
+                        Else
+                            Player.Ctlcontrols.play()
+                        End If
+                        '
+                    End If
+                Next
+            End If
             UpdatePlayBackSpeed()
         Catch ex As Exception
             If Debug_Mode = True Then
@@ -1706,9 +2468,16 @@ Public Class MainForm
     End Sub
     Private Sub PlayersSTOP()
         For Each control As Control In Panel.Controls
-            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                Player.Ctlcontrols.stop()
+            If My.Settings.VideoPlayerType = "VLC" Then
+                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                    Player.playlist.stop()
+                End If
+            Else
+                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                    Player.Ctlcontrols.stop()
+                End If
             End If
         Next
 
@@ -1744,21 +2513,8 @@ Public Class MainForm
 
     Private Sub BtnPAUSE_Click(sender As Object, e As EventArgs) Handles BtnPAUSE.Click
         Try
-            UpdatePlayBackSpeed()
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    If Player.playState = WMPLib.WMPPlayState.wmppsScanForward Or Player.playState = WMPLib.WMPPlayState.wmppsScanReverse Then
-                        Player.Ctlcontrols.pause()
-                        Player.settings.rate = 1
-                        Player.Ctlcontrols.play()
-                        Player.Ctlcontrols.pause()
-                    ElseIf Player.playState <> WMPLib.WMPPlayState.wmppsPaused Then
-                        Player.Ctlcontrols.pause()
 
-                    End If
-                End If
-            Next
+            PlayersPAUSE()
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1767,15 +2523,17 @@ Public Class MainForm
         End Try
 
     End Sub
-
+    Dim VLCReverse As Boolean = False
     Private Sub BtnREVERSE_Click(sender As Object, e As EventArgs) Handles BtnREVERSE.Click
         Try
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Player.Ctlcontrols.fastReverse()
-                End If
-            Next
+            If My.Settings.VideoPlayerType <> "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Player.Ctlcontrols.fastReverse()
+                    End If
+                Next
+            End If
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1804,9 +2562,18 @@ Public Class MainForm
                     If TimeCodeBar.Value > TimeCodeBar.Minimum Then
 
                         For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.currentPosition -= 1
+                            If My.Settings.VideoPlayerType = "VLC" Then
+                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                    If Player.input.time > 1000 Then
+                                        Player.input.time -= 1000
+                                    End If
+                                End If
+                            Else
+                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                    Player.Ctlcontrols.currentPosition -= 1
+                                End If
                             End If
                         Next
 
@@ -1818,9 +2585,18 @@ Public Class MainForm
                     CurrentTimeList.Focus()
                     If TimeCodeBar.Value > TimeCodeBar.Minimum Then
                         For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.currentPosition -= 1 / 36.0
+                            If My.Settings.VideoPlayerType = "VLC" Then
+                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                    If Player.input.time > 1000 / 36.0 Then
+                                        Player.input.time -= 1000 / 36.0
+                                    End If
+                                End If
+                            Else
+                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                    Player.Ctlcontrols.currentPosition -= 1 / 36.0
+                                End If
                             End If
                         Next
 
@@ -1831,10 +2607,20 @@ Public Class MainForm
                 If e.KeyValue = 190 Or (e.KeyData = Keys.Right And CurrentTimeList.Focus = True) Then '>
                     CurrentTimeList.Focus()
                     If TimeCodeBar.Value < TimeCodeBar.Maximum Then
+
                         For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.currentPosition += 1
+                            If My.Settings.VideoPlayerType = "VLC" Then
+                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                    If Player.input.length - 1000 > Player.input.time Then
+                                        Player.input.time += 1000
+                                    End If
+                                End If
+                            Else
+                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                    Player.Ctlcontrols.currentPosition += 1
+                                End If
                             End If
                         Next
 
@@ -1846,9 +2632,18 @@ Public Class MainForm
                     CurrentTimeList.Focus()
                     If TimeCodeBar.Value < TimeCodeBar.Maximum Then
                         For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.currentPosition += 1 / 36.0
+                            If My.Settings.VideoPlayerType = "VLC" Then
+                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                    If Player.input.length - (1000 / 36) > Player.input.time Then
+                                        Player.input.time += 1000 / 36
+                                    End If
+                                End If
+                            Else
+                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                    Player.Ctlcontrols.currentPosition += 1 / 36.0
+                                End If
                             End If
                         Next
 
@@ -1875,9 +2670,16 @@ Public Class MainForm
                 If e.KeyData = Keys.S Then
                     CurrentTimeList.Focus()
                     For Each control As Control In Panel.Controls
-                        If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                            Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                            Player.Ctlcontrols.stop()
+                        If My.Settings.VideoPlayerType = "VLC" Then
+                            If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                Player.playlist.stop()
+                            End If
+                        Else
+                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                Player.Ctlcontrols.stop()
+                            End If
                         End If
                     Next
                     e.Handled = True
@@ -1885,9 +2687,18 @@ Public Class MainForm
                 If e.KeyData = Keys.R Then
                     CurrentTimeList.Focus()
                     For Each control As Control In Panel.Controls
-                        If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                            Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                            Player.Ctlcontrols.fastReverse()
+                        If My.Settings.VideoPlayerType = "VLC" Then
+                            If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                If Player.input.time = 500 Then
+                                    Player.input.time -= 500
+                                End If
+                            End If
+                        Else
+                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                Player.Ctlcontrols.fastReverse()
+                            End If
                         End If
                     Next
                     e.Handled = True
@@ -1907,33 +2718,110 @@ Public Class MainForm
         End Try
     End Sub
 
-
-    Private Sub Tv_Explorer_NodeMouseHover(sender As Object, e As TreeNodeMouseHoverEventArgs) Handles Tv_Explorer.NodeMouseHover
+    Private Sub PreviewPlayerExist(PlayerName As String)
         Try
-            Dim Selection = e.Node.Tag.ToString
-            Dim a = FileSize(Selection)
-            If e.Node.ImageKey.ToString() = ".mp4" And FileSize(Selection) > 1000 Then
-                PlayerPreview.URL = e.Node.Tag.ToString
-                PlayerPreview.settings.setMode("loop", True)
 
-                PlayerPreview.settings.rate = 20
-                PlayerPreview.Ctlcontrols.play()
-                PREVIEWBox.BringToFront()
-                PREVIEWBox.Visible = True
-                PlayerPreview.uiMode = "none"
-                PlayerPreview.Ctlenabled = False
-            Else
-                PREVIEWBox.Visible = False
-                PlayerPreview.Ctlcontrols.stop()
+            If IsNothing(PreviewPanel.Controls(PlayerName)) Then
+                Logging("Info - Creating New Preview Player: " & PlayerName)
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    Dim VLCPlayer As New AxAXVLC.AxVLCPlugin2
+                    VLCPlayer.Name = PlayerName
+                    VLCPlayer.Location = New Point(0, 0)
+                    VLCPlayer.Size = New Size(200, 200)
+
+                    VLCPlayer.Dock = DockStyle.Fill
+
+                    PreviewPanel.Controls.Add(VLCPlayer)
+
+
+                Else
+                    Dim NewPlayer As New AxWMPLib.AxWindowsMediaPlayer
+                    NewPlayer.Name = PlayerName
+
+                    NewPlayer.Dock = DockStyle.Fill
+
+                    PreviewPanel.Controls.Add(NewPlayer)
+                    NewPlayer.Location = New Point(0, 0)
+                    NewPlayer.Size = New Size(200, 200)
+                    NewPlayer.Visible = True
+
+
+                End If
             End If
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+    Private Sub Tv_Explorer_NodeMouseHover(sender As Object, e As TreeNodeMouseHoverEventArgs) Handles Tv_Explorer.NodeMouseHover
+        Try
+            PreviewPlayerExist("Preview")
+            Dim Selection = e.Node.Tag.ToString
+            Dim a = FileSize(Selection)
+            For Each control As Control In PreviewPanel.Controls
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(PreviewPanel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        If e.Node.ImageKey.ToString() = ".mp4" And FileSize(Selection) > 1000 Then
+                            PREVIEWBox.BringToFront()
+                            PREVIEWBox.Visible = True
+
+                            Player.FullscreenEnabled = False
+                            Player.CtlVisible = False
+                            Player.Toolbar = False
+                            Player.AutoLoop = True
+                            Player.AutoPlay = True
+                            Player.playlist.items.clear()
+                            Dim URL As String = ("file:\\\" & e.Node.Tag.ToString).Replace("\", "/")
+                            Player.playlist.add(URL)
+
+                            Player.playlist.play()
+                            Player.input.rate = 20
+                            Player.Visible = True
+                        Else
+                            PREVIEWBox.Visible = False
+                            Player.playlist.stop()
+                        End If
+                    End If
+                Else
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(PreviewPanel.Controls(control.Name), AxWindowsMediaPlayer)
+
+                        If e.Node.ImageKey.ToString() = ".mp4" And FileSize(Selection) > 1000 Then
+                            PREVIEWBox.BringToFront()
+                            PREVIEWBox.Visible = True
+                            Player.URL = e.Node.Tag.ToString
+                            Player.settings.setMode("loop", True)
+
+                            Player.enableContextMenu = False
+                            Player.settings.rate = 20
+                            Player.Ctlcontrols.play()
+                            Player.uiMode = "none"
+                            Player.Ctlenabled = False
+
+                        Else
+                            PREVIEWBox.Visible = False
+                            Player.Ctlcontrols.stop()
+                        End If
+
+                    End If
+                End If
+            Next
+
+
+
+
+
+        Catch ex As Exception
+            'If Debug_Mode = True Then
+            '    MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            'End If
+            'Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
             Try
                 PREVIEWBox.Visible = False
-                PlayerPreview.Ctlcontrols.stop()
+
             Catch eex As Exception
             End Try
         End Try
@@ -1942,12 +2830,24 @@ Public Class MainForm
 
     Private Sub Tv_Explorer_MouseLeave(sender As Object, e As EventArgs) Handles Tv_Explorer.MouseLeave
         Try
-            PlayerPreview.Ctlcontrols.stop()
+            For Each control As Control In PreviewPanel.Controls
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(PreviewPanel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Player.playlist.stop()
+                    End If
+                Else
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(PreviewPanel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Player.Ctlcontrols.stop()
+                    End If
+                End If
+            Next
         Catch ex As Exception
-            If Debug_Mode = True Then
-                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+            'If Debug_Mode = True Then
+            '    MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            'End If
+            'Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
         Try
             PREVIEWBox.Visible = False
@@ -1975,39 +2875,6 @@ Public Class MainForm
         End If
         PREVIEWBox.Location = Location
     End Sub
-
-    Private Sub PlayerPreview_PlayStateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles PlayerPreview.PlayStateChange
-        'PREVIEWBox.Text = "Preview Window - " & PlayerPreview.status 'URL.ToString.Remove(0, PlayerCenter.URL.ToString.LastIndexOf("\") + 1)
-        Logging("Info - Player Preview Playstate Changed " & PlayerPreview.playState.ToString)
-        If PlayerPreview.playState = WMPLib.WMPPlayState.wmppsPlaying Then
-            PREVIEWBox.BackColor = Me.BackColor
-            PREVIEWBox.Text = "Preview Window - " & PlayerPreview.URL.ToString.Remove(0, PlayerPreview.URL.ToString.LastIndexOf("\") + 1)
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsStopped Then
-            PREVIEWBox.BackColor = Color.Red
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsScanForward Then
-            PREVIEWBox.BackColor = Me.BackColor
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsPaused Then
-            PREVIEWBox.BackColor = Color.Yellow
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsReady Then
-            PREVIEWBox.BackColor = Color.LightGray
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsTransitioning Then
-            PREVIEWBox.BackColor = Color.Gray
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsMediaEnded Then
-            PREVIEWBox.BackColor = Color.LightGreen
-        ElseIf PlayerPreview.playState = WMPLib.WMPPlayState.wmppsScanReverse Then
-            PREVIEWBox.BackColor = Color.BlueViolet
-        Else
-            PREVIEWBox.BackColor = Color.DarkRed
-            PREVIEWBox.Text = "Preview Window - " & PlayerPreview.URL.ToString.Remove(0, PlayerPreview.URL.ToString.LastIndexOf("\") + 1) & " --- ERROR ---"
-        End If
-        Languages.Preview()
-
-
-
-    End Sub
-
-
-
 
     Private Sub MainForm_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         UpdatePlayersLayout()
@@ -2060,27 +2927,53 @@ Public Class MainForm
             End If
 
             For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
 
-                    Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
-                    Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
 
-                    Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
-                    Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
-                    Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
-                    Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
+                        Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
 
-                    Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
-                    Status.Location = New Point(Player.Left, Player.Top)
-                    PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
-                    PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
-                    PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
-                    'Player.BringToFront()
-                    'Status.BringToFront()
-                    PlayerTop.BringToFront()
-                    PlayerLeft.BringToFront()
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Status.Location = New Point(Player.Left, Player.Top)
+                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                        'Player.BringToFront()
+                        'Status.BringToFront()
+                        PlayerTop.BringToFront()
+                        PlayerLeft.BringToFront()
 
+                    End If
+
+                Else
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
+                        Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
+
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Status.Location = New Point(Player.Left, Player.Top)
+                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                        'Player.BringToFront()
+                        'Status.BringToFront()
+                        PlayerTop.BringToFront()
+                        PlayerLeft.BringToFront()
+
+                    End If
                 End If
             Next
         Catch ex As Exception
@@ -2119,6 +3012,7 @@ Public Class MainForm
                                                                                     "&entry.876718684=" & FixedFolders &
                                                                                     Uri.EscapeUriString(LinksSelected) &
                                                                                     (RenderViewsSelected) &
+                                                                                    "&entry.729160587=" & Uri.EscapeUriString(My.Settings.VideoPlayerType) &
                                                                                     "&entry.1520185355=" & Uri.EscapeUriString(UpDated) &
                                                                                     "&entry.37629513=" & Uri.EscapeUriString(curTimeZone.StandardName) &
                                                                                     "&entry.1103660004=" & Uri.EscapeUriString(My.Settings.UserLanguage) &
@@ -2144,14 +3038,21 @@ Public Class MainForm
         Else
             FormIsClosing = True
         End If
-        My.Settings.LastAspectRatio = AspectName.Text
-        My.Settings.Save()
         Try
             For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Player.Ctlcontrols.stop()
-                    Player.close()
+                If My.Settings.VideoPlayerType = "VLC" Then
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Player.playlist.items.clear()
+                        Player.Dispose()
+                    End If
+                Else
+
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Player.Ctlcontrols.stop()
+                        Player.close()
+                    End If
                 End If
             Next
         Catch ex As Exception
@@ -2160,6 +3061,11 @@ Public Class MainForm
             End If
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
+
+        My.Settings.VideoPlayerType = VideoPlayerType.Text
+        My.Settings.LastAspectRatio = AspectName.Text
+        My.Settings.Save()
+
 
 
         Try
@@ -2293,24 +3199,55 @@ Public Class MainForm
                                         PlayersSTOP()
                                         FullCenterCameraName = FileGroup 'item.FullName.Remove(item.FullName.LastIndexOf("\"))
                                         'here
-                                        For Each control As Control In Panel.Controls
-                                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                                If File.Exists(FileGroup & "-" & control.Name & ".mp4") Then
-                                                    Player.URL = (FileGroup & "-" & control.Name & ".mp4")
-                                                Else
-                                                    Player.URL = "null.mp4"
-                                                    Player.close()
-                                                End If
-                                            End If
-                                        Next
+                                        If My.Settings.VideoPlayerType = "VLC" Then
+                                            For Each control As Control In Panel.Controls
+                                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                                    Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                                    If File.Exists(FileGroup & "-" & control.Name & ".mp4") Then
+                                                        'VLCPlayer.BaseURL = (FileGroup & "-" & control.Name & ".mp4")
+                                                        VLCPlayer.playlist.stop()
+                                                        VLCPlayer.playlist.items.clear()
+                                                        VLCPlayer.AutoPlay = False
 
-                                        For Each control As Control In Panel.Controls
-                                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                                Player.Ctlcontrols.play()
-                                            End If
-                                        Next
+                                                        Dim URL As String = ("file:\\\" & FileGroup & "-" & control.Name & ".mp4").Replace("\", "/")
+                                                        VLCPlayer.playlist.add(URL)
+                                                        'AxVLCPlugin21.
+                                                    Else
+                                                        VLCPlayer.playlist.items.clear()
+                                                        'VLCPlayer.BaseURL = "null.mp4"
+
+                                                    End If
+                                                End If
+                                            Next
+
+                                            For Each control As Control In Panel.Controls
+                                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                                    Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                                    VLCPlayer.playlist.play()
+
+                                                End If
+                                            Next
+                                        Else
+                                            For Each control As Control In Panel.Controls
+                                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                                    If File.Exists(FileGroup & "-" & control.Name & ".mp4") Then
+                                                        Player.URL = (FileGroup & "-" & control.Name & ".mp4")
+                                                    Else
+                                                        Player.URL = "null.mp4"
+                                                        Player.close()
+                                                    End If
+                                                End If
+                                            Next
+
+                                            For Each control As Control In Panel.Controls
+                                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                                    Player.Ctlcontrols.play()
+                                                End If
+                                            Next
+                                        End If
+
 
                                         UpdatePlayBackSpeed()
                                         If Tv_Explorer.Focused = False Then
@@ -2322,13 +3259,22 @@ Public Class MainForm
                             Next
                         End If
                     Else
-                        For Each control As Control In Panel.Controls
-                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                                Player.Ctlcontrols.play()
-                            End If
-                        Next
+                        If My.Settings.VideoPlayerType = "VLC" Then
+                            For Each control As Control In Panel.Controls
+                                If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                    Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                    VLCPlayer.playlist.play()
 
+                                End If
+                            Next
+                        Else
+                            For Each control As Control In Panel.Controls
+                                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                    Player.Ctlcontrols.play()
+                                End If
+                            Next
+                        End If
                         UpdatePlayBackSpeed()
                     End If
                 Else
@@ -2401,14 +3347,22 @@ Public Class MainForm
             RenderingStartTime = Now
 
             Dim playbackSpeed As Double = TrackBar2.Value / 10
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        VLCPlayer.playlist.pause()
 
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Player.Ctlcontrols.pause()
-                End If
-            Next
-
+                    End If
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Player.Ctlcontrols.pause()
+                    End If
+                Next
+            End If
 
             RenderFileCount = 0
             RenderFileCountNotDone = 0
@@ -2543,9 +3497,16 @@ Public Class MainForm
                                                     '   Playerinputfiles.Add("-i " & Chr(34) & (Path.GetTempPath() & "Black.mp4") & Chr(34) & " ")
                                                 End If
                                                 'Dim playername As String = item.Name.Remove(0, item.Name.LastIndexOf("-")).Replace(".mp4", "")
-                                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(PlayerEnabled.Name), AxWindowsMediaPlayer)
 
-                                                PlayerNamesByZ.Add(Panel.Controls.GetChildIndex(Player).ToString("000") & "|" & PlayerEnabled.Name)
+                                                If My.Settings.VideoPlayerType = "VLC" Then
+                                                    Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(PlayerEnabled.Name), AxAXVLC.AxVLCPlugin2)
+
+                                                    PlayerNamesByZ.Add(Panel.Controls.GetChildIndex(Player).ToString("000") & "|" & PlayerEnabled.Name)
+                                                Else
+                                                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(PlayerEnabled.Name), AxWindowsMediaPlayer)
+
+                                                    PlayerNamesByZ.Add(Panel.Controls.GetChildIndex(Player).ToString("000") & "|" & PlayerEnabled.Name)
+                                                End If
                                             End If
                                         End If
                                     End If
@@ -2597,16 +3558,7 @@ Public Class MainForm
                             Dim FontFile As String = Path.Combine(dirWindowsFolder.FullName, "Fonts\ariblk.ttf")
                             FontFile = FontFile.Replace("\", "\\").Replace(":", "\:")
 
-                            Dim WatermarkTeslaCam As String = " drawtext=text='TeslaCam Viewer II - Ver." & CurrentVersion & "':x=(375):y=(930):fontfile='" & FontFile & "':fontsize=25:fontcolor=gray,"
-                            Dim WatermarkDateTime As String = " drawtext=text='" & FileDateTime & "':x=(5):y=(925):fontfile='" & FontFile & "':fontsize=30:fontcolor=white,"
-                            Dim WatermarkTimecode As String = " drawtext=fontfile='" & FontFile & "':text='\ \ \ \ \ ':x=1000:y=(925):fontsize=35:fontcolor=white:shadowcolor=black:shadowx=1:shadowy=1:timecode='" & FileTime.Hour.ToString("00") & "\:" & FileTime.Minute.ToString("00") & "\:" & FileTime.Second.ToString("00") & "\:" & (FileTime.Millisecond / 10).ToString("00") & "':timecode_rate=" & framerate & ","
 
-                            Dim SentryModeTrigger As String = ""
-                            If DisplaySentryIndicator.Checked = True And CurrentTimeList.Items.Count > 1 Then
-                                If CurrentTimeList.Items.Item(1) = CurrentTimeList.Items(i) Then
-                                    SentryModeTrigger = " drawtext=text='Sentry':enable='between(t," & Int(SentryTriggerTime) - 1 & "," & Int(SentryTriggerTime) + 4 & ")':x=(920):y=(925):fontfile='" & FontFile & "':fontsize=30:fontcolor=red,"
-                                End If
-                            End If
                             'ffmpeg -i input.mp4 -vf "drawtext=enable='between(t,12,3*60)':fontfile=/usr/share/fonts/truetype/freefont/FreeSerif.ttf: text='Test Text'" -acodec copy output.mp4
 
                             Dim Mirror As String = ""
@@ -2617,6 +3569,7 @@ Public Class MainForm
                             Dim VideoSize As String = ""
                             Dim VideoStartLocation As String = ""
                             Dim IndexCount As Integer = 0
+
                             For Each zIndex In PlayerNamesByZ
                                 For Each item In Playerinputfiles
                                     Dim PlayerName As String = zIndex.Remove(0, zIndex.IndexOf("|") + 1)
@@ -2650,7 +3603,32 @@ Public Class MainForm
                                             Shortest = "overlay=shortest=1"
 
                                         End If
+
                                         If PlayerNamesByZ.Item(PlayerNamesByZ.Count - 1).Contains(PlayerName) Then
+                                            Dim WatermarkHightOffset As Integer = 0
+
+                                            Dim Difference = ToNumUS(Int(OutputHeight * (PlayerSize.Text / 100)) + Int(OutputHeight * (PlayerTop.Text / 100))) - OutputHeight
+                                            If Difference > 0 Then
+                                                WatermarkHightOffset = ToNumUS(Int((Difference / Int(OutputHeight * (PlayerSize.Text / 100))) * 960)) + 10
+                                            End If
+                                            If 930 - WatermarkHightOffset > 960 Or 930 - WatermarkHightOffset < 0 Then
+                                                WatermarkHightOffset = 0
+
+                                            End If
+
+
+                                            Dim WatermarkTeslaCam As String = " drawtext=text='TeslaCam Viewer II - Ver." & CurrentVersion & "':x=(375):y=(" & 930 - WatermarkHightOffset & "):fontfile='" & FontFile & "':fontsize=25:fontcolor=gray,"
+                                            Dim WatermarkDateTime As String = " drawtext=text='" & FileDateTime & "':x=(5):y=(" & 925 - WatermarkHightOffset & "):fontfile='" & FontFile & "':fontsize=30:fontcolor=white,"
+                                            Dim WatermarkTimecode As String = " drawtext=fontfile='" & FontFile & "':text='\ \ \ \ \ ':x=1000:y=(" & 925 - WatermarkHightOffset & "):fontsize=35:fontcolor=white:shadowcolor=black:shadowx=1:shadowy=1:timecode='" & FileTime.Hour.ToString("00") & "\:" & FileTime.Minute.ToString("00") & "\:" & FileTime.Second.ToString("00") & "\:" & (FileTime.Millisecond / 10).ToString("00") & "':timecode_rate=" & framerate & ","
+
+                                            Dim SentryModeTrigger As String = ""
+                                            If DisplaySentryIndicator.Checked = True And CurrentTimeList.Items.Count > 1 Then
+                                                If CurrentTimeList.Items.Item(1) = CurrentTimeList.Items(i) Then
+                                                    SentryModeTrigger = " drawtext=text='Sentry':enable='between(t," & Int(SentryTriggerTime) - 1 & "," & Int(SentryTriggerTime) + 4 & ")':x=(920):y=(" & 925 - WatermarkHightOffset & "):fontfile='" & FontFile & "':fontsize=30:fontcolor=red,"
+                                                End If
+                                            End If
+
+
                                             TopWaterMark = WatermarkTeslaCam & WatermarkDateTime & WatermarkTimecode & SentryModeTrigger
                                         End If
                                         'Dim playbackSpeedCode As String = " -filter:v " & Chr(34) & "setpts=" & 1 / playbackSpeed & "*PTS" & Chr(34)
@@ -2720,11 +3698,13 @@ Public Class MainForm
 
     Public Sub UpdateTextBox(text As String)
         Try
-            If text.IsNormalized Then
-                FFmpegOutput.Text += Environment.NewLine & text.ToString
+            If Debug_Mode = True Then
+                If text.IsNormalized Then
+                    FFmpegOutput.Text += Environment.NewLine & text.ToString
+                End If
+                FFmpegOutput.SelectionStart = FFmpegOutput.Text.Length
+                FFmpegOutput.ScrollToCaret()
             End If
-            FFmpegOutput.SelectionStart = FFmpegOutput.Text.Length
-            FFmpegOutput.ScrollToCaret()
         Catch ex As Exception
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
@@ -3000,16 +3980,16 @@ Public Class MainForm
         If RenderFileCount = 0 And RenderFileCountNotDone = 0 Then
             If My.Settings.UserLanguage = "Dutch" Then
                 RenderFileProgress.Text = "GEDAAN"
-                ThreadsRunningLabel.Text = "GEDAAN"
+                ThreadsRunningLabel.Text = "" '"GEDAAN"
             ElseIf My.Settings.UserLanguage = "Español" Then
                 RenderFileProgress.Text = "Hecho"
-                ThreadsRunningLabel.Text = "Hecho"
+                ThreadsRunningLabel.Text = "" '"Hecho"
             ElseIf My.Settings.UserLanguage = "German" Then
                 RenderFileProgress.Text = "FERTIG"
-                ThreadsRunningLabel.Text = "FERTIG"
+                ThreadsRunningLabel.Text = "" '"FERTIG"
             Else
                 RenderFileProgress.Text = "DONE"
-                ThreadsRunningLabel.Text = "DONE"
+                ThreadsRunningLabel.Text = "" '"DONE"
                 GroupBoxExportSettings.Enabled = True
             End If
 
@@ -3112,13 +4092,14 @@ Public Class MainForm
                 End If
                 'If RenderTimeline.Value > RenderOutTime Then
                 '    RenderTimeline.Value = RenderOutTime
-                '    PlayerRender.Ctlcontrols.currentPosition = RenderTimeline.Value / 10
+                '    '    PlayerRender.Ctlcontrols.currentPosition = RenderTimeline.Value / 10
                 'End If
                 'If RenderTimeline.Value < RenderInTime Then
                 '    RenderTimeline.Value = RenderInTime
                 '    PlayerRender.Ctlcontrols.currentPosition = RenderTimeline.Value / 10
                 'End If
-                'RenderOutTimeGraphic.Left = (((GroupBoxRENDER.Width - 29 - 22) / RenderTimeline.Maximum) * RenderTimeline.Value) + 19
+                'RenderOutTimeGraphic.Left = (((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum) * RenderOutTime) + 10
+
             ElseIf e.Button = MouseButtons.Right Then
                 RenderOutTime = EventTimeCodeBar.Maximum
                 Logging("Info - Render Out Time Changed " & RenderOutTime)
@@ -3134,12 +4115,12 @@ Public Class MainForm
 
     Private Sub RenderInTimeGraphic_Click(sender As Object, e As EventArgs) Handles RenderInTimeGraphic.Click
         Try
-            'If MoveRenderIn = True Then
-            '    MoveRenderIn = False
-            '    Logging("Info - Render In Time Changed " & RenderInTime)
-            'Else
-            '    MoveRenderIn = True
-            'End If
+            If MoveRenderIn = True Then
+                MoveRenderIn = False
+                Logging("Info - Render In Time Changed " & RenderInTime)
+            Else
+                MoveRenderIn = True
+            End If
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -3150,12 +4131,12 @@ Public Class MainForm
 
     Private Sub RenderOutTimeGraphic_Click(sender As Object, e As EventArgs) Handles RenderOutTimeGraphic.Click
         Try
-            'If MoveRenderOut = True Then
-            '    MoveRenderOut = False
-            '    Logging("Info - Render Out Time Changed " & RenderOutTime)
-            'Else
-            '    MoveRenderOut = True
-            'End If
+            If MoveRenderOut = True Then
+                MoveRenderOut = False
+                Logging("Info - Render Out Time Changed " & RenderOutTime)
+            Else
+                MoveRenderOut = True
+            End If
         Catch ex As Exception
             If Debug_Mode = True Then
                 MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -3620,81 +4601,107 @@ Public Class MainForm
             End If
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
-        Try
-            If FixTeslaCamGroupBox.Visible = True Then
-                If FixedTeslaCamFileCount <> 0 Then
-                    FixTeslaCamProgressBar.Maximum = FixedTeslaCamFileCount
-                    FixTeslaCamProgressBar.Value = FixedTeslaCamFileCount - FixedTeslaCamFileNotDone
-                    Dim CurrentProcessCount As Integer = 0
-                    For Each PRunning As Process In System.Diagnostics.Process.GetProcessesByName("ffmpeg")
-                        'PRunning.Kill()
-                        CurrentProcessCount += 1
-                    Next
 
-                    FixingNumFilesLabel.Text = FixedTeslaCamFileCount & " Files Selected, " & CurrentProcessCount & " Being Converted, " & FixedTeslaCamFileCount - FixedTeslaCamFileNotDone & " Complete"
-
-                    If FixedTeslaCamFileNotDone = 0 Then
-                        FixedTeslaCamFileCount = 0
-                    End If
-                Else
-                    FixTeslaCamBtnDone.Text = "Done"
-                    FixTeslaCamBtnDone.Enabled = True
-                    FixingNumFilesLabel.Text = "Done"
-                End If
-            End If
-        Catch ex As Exception
-
-        End Try
         Try
             Dim MaxPlayerSize As New Point(0, 0)
             Dim MinPlayerSize As New Point(Panel.Width, Panel.Height)
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
-                    Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
-                    Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
-                    If PlayerEnabledCheckBox.Checked = True Then
-                        If Player.Visible = False And LayoutChanged = False Then
-                            SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                        Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        If PlayerEnabledCheckBox.Checked = True Then
+                            If Player.Visible = False And LayoutChanged = False Then
+                                SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
+                            End If
+                            Player.Visible = True
+                            Status.Visible = True
+                        Else
+                            If Player.Visible = True And LayoutChanged = False Then
+                                SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
+                            End If
+                            Player.Visible = False
+                            Status.Visible = False
                         End If
-                        Player.Visible = True
-                        Status.Visible = True
-                    Else
-                        If Player.Visible = True And LayoutChanged = False Then
-                            SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
-                        End If
-                        Player.Visible = False
-                        Status.Visible = False
-                    End If
 
-                    If Player.Visible = True Then
-                        If Player.Height > MaxPlayerSize.Y Then
-                            MaxPlayerSize.Y = Player.Height
-                            MaxPlayerSize.X = Player.Width
+                        If Player.Visible = True Then
+                            If Player.Height > MaxPlayerSize.Y Then
+                                MaxPlayerSize.Y = Player.Height
+                                MaxPlayerSize.X = Player.Width
+                            End If
+                            If Player.Height < MinPlayerSize.Y Then
+                                MinPlayerSize.Y = Player.Height
+                                MinPlayerSize.X = Player.Width
+                            End If
+                            If Player.Size = Panel.Size Then
+                                MaxPlayerSize.Y = Player.Height
+                                MaxPlayerSize.X = Player.Width
+                                MinPlayerSize.Y = Player.Height
+                                MinPlayerSize.X = Player.Width
+                                Exit For
+                            End If
                         End If
-                        If Player.Height < MinPlayerSize.Y Then
-                            MinPlayerSize.Y = Player.Height
-                            MinPlayerSize.X = Player.Width
+                        If ResizePlayer = "" And MovePlayer = "" Then
+                            Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                            Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                            Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                            PlayerTop.Visible = False
+                            PlayerLeft.Visible = False
+                            PlayerSize.Visible = False
                         End If
-                        If Player.Size = Panel.Size Then
-                            MaxPlayerSize.Y = Player.Height
-                            MaxPlayerSize.X = Player.Width
-                            MinPlayerSize.Y = Player.Height
-                            MinPlayerSize.X = Player.Width
-                            Exit For
-                        End If
-                    End If
-                    If ResizePlayer = "" And MovePlayer = "" Then
-                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
-                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
-                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
-                        PlayerTop.Visible = False
-                        PlayerLeft.Visible = False
-                        PlayerSize.Visible = False
-                    End If
 
-                End If
-            Next
+                    End If
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                        Dim PlayerEnabledCheckBox As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        If PlayerEnabledCheckBox.Checked = True Then
+                            If Player.Visible = False And LayoutChanged = False Then
+                                SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
+                            End If
+                            Player.Visible = True
+                            Status.Visible = True
+                        Else
+                            If Player.Visible = True And LayoutChanged = False Then
+                                SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Orange_5050
+                            End If
+                            Player.Visible = False
+                            Status.Visible = False
+                        End If
+
+                        If Player.Visible = True Then
+                            If Player.Height > MaxPlayerSize.Y Then
+                                MaxPlayerSize.Y = Player.Height
+                                MaxPlayerSize.X = Player.Width
+                            End If
+                            If Player.Height < MinPlayerSize.Y Then
+                                MinPlayerSize.Y = Player.Height
+                                MinPlayerSize.X = Player.Width
+                            End If
+                            If Player.Size = Panel.Size Then
+                                MaxPlayerSize.Y = Player.Height
+                                MaxPlayerSize.X = Player.Width
+                                MinPlayerSize.Y = Player.Height
+                                MinPlayerSize.X = Player.Width
+                                Exit For
+                            End If
+                        End If
+                        If ResizePlayer = "" And MovePlayer = "" Then
+                            Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                            Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                            Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                            PlayerTop.Visible = False
+                            PlayerLeft.Visible = False
+                            PlayerSize.Visible = False
+                        End If
+
+                    End If
+                Next
+            End If
 
             Dim SelectedQuality = 0
             Select Case RenderQuality.SelectedIndex
@@ -3846,32 +4853,9 @@ Public Class MainForm
                         End If
                         FixedTeslaCamFileCount += 1
                         FixedTeslaCamFileNotDone += 1
-                        Console.WriteLine(item.FullName)
-                        Dim p As New Process
-                        p.StartInfo.FileName = System.IO.Path.Combine(Application.StartupPath, "ffmpeg.exe")
-                        p.StartInfo.UseShellExecute = False
-                        p.StartInfo.CreateNoWindow = True
-                        p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
-                        p.StartInfo.RedirectStandardError = True
-                        p.EnableRaisingEvents = True
+                        'Console.WriteLine(item.FullName)
+                        FixTeslaCamQueue.Add(item.FullName & "|" & dir.FullName & "\" & item.Name)
 
-                        'here
-                        p.StartInfo.Arguments = "-i " & Chr(34) & item.FullName & Chr(34) & " -c:v copy -y -preset veryfast " & Chr(34) & dir.FullName & "\" & item.Name & Chr(34)
-                        AddHandler p.ErrorDataReceived, AddressOf FixTeslaCam_proccess_OutputDataReceived
-                        AddHandler p.OutputDataReceived, AddressOf FixTeslaCam_proccess_OutputDataReceived
-                        AddHandler p.Exited, AddressOf proc_FixTesla_Exited
-
-                        Logging("FixFile - " & Chr(34) & dir.FullName & "\" & item.Name & Chr(34))
-                        p.Start()
-
-                        Try
-                            p.BeginErrorReadLine()
-                        Catch ex As Exception
-                            If Debug_Mode = True Then
-                                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            End If
-                            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
-                        End Try
                         'p.WaitForExit()
 
                         If SubFolders <> "\" And filecount >= 12 Then
@@ -3886,6 +4870,65 @@ Public Class MainForm
         End If
 
     End Sub
+
+    Dim FixTeslaCamQueue As New List(Of String)
+
+
+    Public Sub StartFixTeslaCamFiles()
+        If FixTeslaCamQueue.Count > 0 Then
+            Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(FixTeslaCamQueue.Item(0)))
+                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                MyReader.SetDelimiters("|")
+
+                Dim Found As Boolean = False
+                Dim currentRow As String()
+                While Not MyReader.EndOfData
+                    Try
+                        currentRow = MyReader.ReadFields()
+                    Catch ex As Exception
+
+                    End Try
+                End While
+                If currentRow.Count = 2 Then
+                    Dim InputFile As String = currentRow(0)
+                    Dim OutputFile As String = currentRow(1)
+
+                    Dim p As New Process
+                    p.StartInfo.FileName = System.IO.Path.Combine(Application.StartupPath, "ffmpeg.exe")
+                    p.StartInfo.UseShellExecute = False
+                    p.StartInfo.CreateNoWindow = True
+                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
+                    p.StartInfo.RedirectStandardError = True
+                    p.EnableRaisingEvents = True
+
+                    'here
+                    p.StartInfo.Arguments = "-i " & Chr(34) & InputFile & Chr(34) & " -c:v copy -y -preset veryfast " & Chr(34) & OutputFile & Chr(34)
+                    AddHandler p.ErrorDataReceived, AddressOf FixTeslaCam_proccess_OutputDataReceived
+                    AddHandler p.OutputDataReceived, AddressOf FixTeslaCam_proccess_OutputDataReceived
+                    AddHandler p.Exited, AddressOf proc_FixTesla_Exited
+
+                    Logging("FixFile - " & Chr(34) & OutputFile & Chr(34))
+                    p.Start()
+
+                    Try
+                        p.BeginErrorReadLine()
+                    Catch ex As Exception
+                        If Debug_Mode = True Then
+                            MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
+                        Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+                    End Try
+
+                End If
+
+            End Using
+            FixTeslaCamQueue.RemoveAt(0)
+
+        End If
+
+    End Sub
+
+
     Private Sub proc_FixTesla_Exited(ByVal sender As Object, ByVal e As System.EventArgs) ' Handles p.Exited
         FixedTeslaCamFileNotDone -= 1
 
@@ -4068,54 +5111,108 @@ Public Class MainForm
             If Not My.Settings.AspectRatioList.Contains(AspectRatio.Text) Then
                 'Dim Text As String = AspectRatio.Text
             End If
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
 
-                    Dim PlayerEnabled As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
-                    Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
-                    Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
-                    Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
-                    Dim zIndex As Integer = Panel.Controls.GetChildIndex(Player)
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
 
-                    Dim ItemFound As Integer = -1
-                    Dim CurrentItem As Integer = 0
-                    For Each Item As String In My.Settings.UserSavedCameraLayouts
-                        Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
-                            MyReader.TextFieldType = FileIO.FieldType.Delimited
-                            MyReader.SetDelimiters("|")
+                        Dim PlayerEnabled As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Dim zIndex As Integer = Panel.Controls.GetChildIndex(Player)
 
-                            Dim Found As Boolean = False
-                            Dim currentRow As String()
-                            While Not MyReader.EndOfData
-                                Try
-                                    currentRow = MyReader.ReadFields()
-                                Catch ex As Exception
+                        Dim ItemFound As Integer = -1
+                        Dim CurrentItem As Integer = 0
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
+                            Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
+                                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                                MyReader.SetDelimiters("|")
 
-                                End Try
-                            End While
-                            If currentRow.Count > 0 Then
-                                If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
-                                    ItemFound = CurrentItem
-                                    Exit For
+                                Dim Found As Boolean = False
+                                Dim currentRow As String()
+                                While Not MyReader.EndOfData
+                                    Try
+                                        currentRow = MyReader.ReadFields()
+                                    Catch ex As Exception
+
+                                    End Try
+                                End While
+                                If currentRow.Count > 0 Then
+                                    If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
+                                        ItemFound = CurrentItem
+                                        Exit For
+                                    End If
                                 End If
-                            End If
 
-                        End Using
-                        CurrentItem += 1
-                    Next
+                            End Using
+                            CurrentItem += 1
+                        Next
 
-                    If ItemFound = -1 Then
-                        '                               [CameraName],[PanelAspectRatioName],[PlayerLocationLeftPercentage],[PlayerLocationTopPercentage],[PlayerSizePercentage],[Enabled?],[zIndex]
-                        My.Settings.UserSavedCameraLayouts.Add(Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
-                        Logging("Info - New Camera Position added to layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
-                    Else
-                        My.Settings.UserSavedCameraLayouts(ItemFound) = (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
-                        Logging("Info - Updated Camera Position in layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
+                        If ItemFound = -1 Then
+                            '                               [CameraName],[PanelAspectRatioName],[PlayerLocationLeftPercentage],[PlayerLocationTopPercentage],[PlayerSizePercentage],[Enabled?],[zIndex]
+                            My.Settings.UserSavedCameraLayouts.Add(Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
+                            Logging("Info - New Camera Position added to layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
+                        Else
+                            My.Settings.UserSavedCameraLayouts(ItemFound) = (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
+                            Logging("Info - Updated Camera Position in layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
+                        End If
+
                     End If
+                Next
+            Else
 
-                End If
-            Next
+
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+
+                        Dim PlayerEnabled As CheckBox = CType(PlayersEnabledPanel.Controls(control.Name), CheckBox)
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Dim zIndex As Integer = Panel.Controls.GetChildIndex(Player)
+
+                        Dim ItemFound As Integer = -1
+                        Dim CurrentItem As Integer = 0
+                        For Each Item As String In My.Settings.UserSavedCameraLayouts
+                            Using MyReader As New FileIO.TextFieldParser(New System.IO.StringReader(Item))
+                                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                                MyReader.SetDelimiters("|")
+
+                                Dim Found As Boolean = False
+                                Dim currentRow As String()
+                                While Not MyReader.EndOfData
+                                    Try
+                                        currentRow = MyReader.ReadFields()
+                                    Catch ex As Exception
+
+                                    End Try
+                                End While
+                                If currentRow.Count > 0 Then
+                                    If currentRow(0) = Player.Name And currentRow(1) = AspectName.Text Then
+                                        ItemFound = CurrentItem
+                                        Exit For
+                                    End If
+                                End If
+
+                            End Using
+                            CurrentItem += 1
+                        Next
+
+                        If ItemFound = -1 Then
+                            '                               [CameraName],[PanelAspectRatioName],[PlayerLocationLeftPercentage],[PlayerLocationTopPercentage],[PlayerSizePercentage],[Enabled?],[zIndex]
+                            My.Settings.UserSavedCameraLayouts.Add(Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
+                            Logging("Info - New Camera Position added to layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
+                        Else
+                            My.Settings.UserSavedCameraLayouts(ItemFound) = (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex)
+                            Logging("Info - Updated Camera Position in layout: " & (Player.Name & "|" & AspectName.Text & "|" & AspectRatio.Text & "|" & ToNumUS(PlayerLeft.Text) & "|" & ToNumUS(PlayerTop.Text) & "|" & ToNumUS(PlayerSize.Text) & "|" & PlayerEnabled.Checked & "|" & zIndex))
+                        End If
+
+                    End If
+                Next
+            End If
             My.Settings.Save()
             SavedLayouts.Text = ""
             For Each Item As String In My.Settings.UserSavedCameraLayouts
@@ -4188,30 +5285,57 @@ Public Class MainForm
                     Panel.Left = (Me.Width - Panel.Width - 15) / 2
                 End If
             End If
-            For Each control As Control In Panel.Controls
-                If control.GetType Is GetType(AxWindowsMediaPlayer) Then
-                    Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+            If My.Settings.VideoPlayerType = "VLC" Then
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                        Dim Player As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
 
-                    Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
-                    Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
 
-                    Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
-                    Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
-                    Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
-                    Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
+                        Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
 
-                    Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
-                    Status.Location = New Point(Player.Left, Player.Top)
-                    PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
-                    PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
-                    PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
-                    'Player.BringToFront()
-                    'Status.BringToFront()
-                    PlayerTop.BringToFront()
-                    PlayerLeft.BringToFront()
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Status.Location = New Point(Player.Left, Player.Top)
+                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                        'Player.BringToFront()
+                        'Status.BringToFront()
+                        PlayerTop.BringToFront()
+                        PlayerLeft.BringToFront()
 
-                End If
-            Next
+                    End If
+                Next
+            Else
+                For Each control As Control In Panel.Controls
+                    If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                        Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+
+                        Dim PlayerSize As Label = CType(Panel.Controls(control.Name & "-Size"), Label)
+                        Player.Size = New Size(((Panel.Height / (100 / PlayerSize.Text)) / 3) * 4, Panel.Height / (100 / PlayerSize.Text))
+
+                        Dim PlayerTop As Label = CType(Panel.Controls(control.Name & "-Top"), Label)
+                        Dim PlayerLeft As Label = CType(Panel.Controls(control.Name & "-Left"), Label)
+                        Player.Left = (PlayerLeft.Text / 100) * Panel.Width 'Panel.Width / (100 / PlayerLeft.Text)
+                        Player.Top = (PlayerTop.Text / 100) * Panel.Height 'Panel.Height / (100 / PlayerTop.Text)
+
+                        Dim Status As Label = CType(Panel.Controls(control.Name & "-Status"), Label)
+                        Status.Location = New Point(Player.Left, Player.Top)
+                        PlayerTop.Location = New Point(Player.Left, Player.Top + 15)
+                        PlayerLeft.Location = New Point(Player.Left, Player.Top + 30)
+                        PlayerSize.Location = New Point(Player.Left, Player.Top + 45)
+                        'Player.BringToFront()
+                        'Status.BringToFront()
+                        PlayerTop.BringToFront()
+                        PlayerLeft.BringToFront()
+
+                    End If
+                Next
+            End If
             UpdatePlayersLayout()
             SaveLayoutBtn.BackgroundImage = My.Resources.Disk_Normal_5050
         Catch ex As Exception
@@ -4372,15 +5496,18 @@ Public Class MainForm
             Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
     End Sub
+    Dim FixTeslaCamStart As DateTime
 
     Private Sub AllFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AllFilesToolStripMenuItem.Click
         Try
+
             PlayersSTOP()
             FixingNumFilesLabel.Text = ""
             FixTeslaCamFFmpegOutput.Text = ""
             FixTeslaCamBtnDone.Text = "Cancel"
             FixTeslaCamBtnDone.Enabled = True
             FixTeslaCamGroupBox.Visible = True
+            FixTeslaCamQueue.Clear()
             Dim dir As New IO.DirectoryInfo(Path.GetTempPath() & "TeslaCamFix")
             If Not dir.Exists Then
                 FileSystem.MkDir(Path.GetTempPath() & "TeslaCamFix")
@@ -4407,6 +5534,7 @@ Public Class MainForm
                             Exit Sub
                     End Select
             End Select
+            FixTeslaCamStart = DateTime.Now
             FixTeslaCamFiles(Tv_Explorer.SelectedNode.Tag, "\", folderpath, 0)
             Tv_Explorer.Enabled = False
         Catch ex As Exception
@@ -4425,6 +5553,7 @@ Public Class MainForm
             FixTeslaCamBtnDone.Text = "Cancel"
             FixTeslaCamBtnDone.Enabled = True
             FixTeslaCamGroupBox.Visible = True
+            FixTeslaCamQueue.Clear()
             Dim dir As New IO.DirectoryInfo(Path.GetTempPath() & "TeslaCamFix")
             If Not dir.Exists Then
                 FileSystem.MkDir(Path.GetTempPath() & "TeslaCamFix")
@@ -4451,6 +5580,7 @@ Public Class MainForm
                             Exit Sub
                     End Select
             End Select
+            FixTeslaCamStart = DateTime.Now
             FixTeslaCamFiles(Tv_Explorer.SelectedNode.Tag, "\", folderpath, 3)
             Tv_Explorer.Enabled = False
         Catch ex As Exception
@@ -4651,7 +5781,7 @@ Public Class MainForm
             RefreshRootNodes()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
         End Try
     End Sub
 
@@ -4687,5 +5817,138 @@ Public Class MainForm
 
     Private Sub RenderOutTimeLabel_Click(sender As Object, e As EventArgs) Handles RenderOutTimeLabel.Click
 
+    End Sub
+    Dim EventTimeMove As Boolean = False
+    Private Sub EventTimeCodeBar_Scroll(sender As Object, e As EventArgs) Handles EventTimeCodeBar.Scroll
+        Try
+            EventTimeMove = True
+            Dim TotalSoFar As Double
+            Dim CurrentTime As Integer
+            For i As Integer = 1 To MaxDurationsList.Items.Count
+                Dim CurrentMax = MaxDurationsList.Items.Item(MaxDurationsList.Items.Count - i) * 10
+                CurrentTime += 1
+                If TotalSoFar + CurrentMax > EventTimeCodeBar.Value Then
+                    CurrentTimeList.SelectedIndex = CurrentTimeList.Items.Count - CurrentTime
+                    If My.Settings.VideoPlayerType = "VLC" Then
+                        For Each control As Control In Panel.Controls
+                            If control.GetType Is GetType(AxAXVLC.AxVLCPlugin2) Then
+                                Dim VLCPlayer As AxAXVLC.AxVLCPlugin2 = CType(Panel.Controls(control.Name), AxAXVLC.AxVLCPlugin2)
+                                VLCPlayer.input.time = (EventTimeCodeBar.Value - TotalSoFar) * 100
+                            End If
+                        Next
+                    Else
+                        For Each control As Control In Panel.Controls
+                            If control.GetType Is GetType(AxWindowsMediaPlayer) Then
+                                Dim Player As AxWindowsMediaPlayer = CType(Panel.Controls(control.Name), AxWindowsMediaPlayer)
+                                Player.Ctlcontrols.currentPosition = (EventTimeCodeBar.Value - TotalSoFar) / 10
+                            End If
+                        Next
+                    End If
+
+                    'TimeCodeBar.Value = (EventTimeCodeBar.Value) - (TotalSoFar) '- (CurrentMax)
+                    Exit For
+                End If
+                TotalSoFar += CurrentMax
+            Next
+            EventTimeMove = False
+        Catch ex As Exception
+            If Debug_Mode = True Then
+                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub EventTimeCodeBar_MouseMove(sender As Object, e As MouseEventArgs) Handles EventTimeCodeBar.MouseMove
+        Try
+            '                               (((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum) * RenderOutTime) + 10
+            If MoveRenderOut = True And e.X < EventTimeCodeBar.Width - 14 And e.X > 14 And e.X > RenderInTimeGraphic.Left + 14 Then
+                RenderOutTimeGraphic.Left = e.X - 5
+                RenderOutTime = ((e.X - 15) / ((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum))
+            End If
+            If MoveRenderIn = True And e.X < EventTimeCodeBar.Width - 14 And e.X > 14 And e.X < RenderOutTimeGraphic.Left - 4 Then
+                RenderInTimeGraphic.Left = e.X - 5
+                RenderInTime = ((e.X - 15) / ((EventTimeCodeBar.Width - 30) / EventTimeCodeBar.Maximum))
+            End If
+        Catch ex As Exception
+            If Debug_Mode = True Then
+                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub EventTimeCodeBar_MouseClick(sender As Object, e As MouseEventArgs) Handles EventTimeCodeBar.MouseClick
+        MoveRenderOut = False
+        MoveRenderIn = False
+    End Sub
+
+    Private Sub MaxNumberOfThreads_Click(sender As Object, e As EventArgs) Handles MaxNumberOfThreads.Click
+
+    End Sub
+
+    Private Sub MaxNumberOfThreads_TextChanged(sender As Object, e As EventArgs) Handles MaxNumberOfThreads.TextChanged
+        Dim MaxThreads As Integer
+        Double.TryParse(MaxNumberOfThreads.Text, MaxThreads)
+
+        If MaxThreads <> 0 Then
+            MaxNumberOfThreads.BackColor = Color.White
+            My.Settings.MaxThreads = MaxThreads
+            My.Settings.Save()
+        Else
+            MaxNumberOfThreads.BackColor = Color.DarkRed
+        End If
+    End Sub
+
+    Private Sub MaxNumberOfThreads_KeyDown(sender As Object, e As KeyEventArgs) Handles MaxNumberOfThreads.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            SettingsMenuStrip.Visible = False
+        End If
+    End Sub
+
+    Private Sub SettingsMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles SettingsMenuStrip.Opening
+        MaxNumberOfThreads.Text = My.Settings.MaxThreads
+    End Sub
+
+    Private Sub BtnREVERSE_MouseDown(sender As Object, e As MouseEventArgs) Handles BtnREVERSE.MouseDown
+        VLCReverse = True
+    End Sub
+
+    Private Sub BtnREVERSE_MouseUp(sender As Object, e As MouseEventArgs) Handles BtnREVERSE.MouseUp
+        VLCReverse = False
+    End Sub
+
+    Private Sub VideoPlayerType_Click(sender As Object, e As EventArgs) Handles VideoPlayerType.Click
+
+    End Sub
+
+    Private Sub VideoPlayerType_TextChanged(sender As Object, e As EventArgs) Handles VideoPlayerType.TextChanged
+
+    End Sub
+
+    Private Sub VideoPlayerType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles VideoPlayerType.SelectedIndexChanged
+        Try
+            If My.Settings.VideoPlayerType <> VideoPlayerType.Text Then
+                SettingsMenuStrip.Visible = False
+                MsgBox("Please Restart TeslaCam Viewer II For Settings To Take Effect.", MsgBoxStyle.OkOnly, "Restart")
+                Logging("Info - Video Player Type Changed to " & VideoPlayerType.Text)
+            End If
+        Catch ex As Exception
+            If Debug_Mode = True Then
+                MessageBox.Show("DebugMode:" & vbCrLf & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace, "Error ", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            Logging("Error - " & ex.Message & " IN:" & ex.TargetSite.Name & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub TrackBar2_MouseClick(sender As Object, e As MouseEventArgs) Handles TrackBar2.MouseClick
+        If e.Button = MouseButtons.Right Then
+            TrackBar2.Value = 10
+        End If
+    End Sub
+
+    Private Sub SentryBTN_Click(sender As Object, e As EventArgs) Handles SentryBTN.Click
+        QuickStart = False
+        LoadSentryEvent(False)
     End Sub
 End Class

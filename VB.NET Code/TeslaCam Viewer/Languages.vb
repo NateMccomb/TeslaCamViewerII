@@ -55,7 +55,7 @@ Module Languages
             Dim VersionNotes As String = sr.ReadToEnd
 
 
-            If NewestVersion.Contains(MainForm.CurrentVersion) Then
+            If NewestVersion.Contains(MainForm.CurrentVersion) Or NewestVersion.Contains("2019.44.0.0") Then
                 If My.Settings.UserLanguage = "Dutch" Then
                     MainForm.UPDATELabel.Text = "Je hebt de laatste versie"
                     MainForm.MainToolTip.SetToolTip(MainForm.UPDATELabel, "Je beschikt over de laatste versie: " & MainForm.CurrentVersion & vbCrLf & VersionNotes)
@@ -311,7 +311,7 @@ Module Languages
             'MainForm.MainToolTip.SetToolTip(MainForm.GroupBoxRIGHTREPEATER, "Click to move to new location")
 
             MainForm.MainToolTip.SetToolTip(MainForm.Donation, "Thanks!")
-
+            MainForm.MainToolTip.SetToolTip(MainForm.EventSentryModeMarker, "Sentry Mode Trigger - If Sentry Mode was enabled")
             MainForm.MainToolTip.SetToolTip(MainForm.SentryModeMarker, "Sentry Mode Trigger - If Sentry Mode was enabled")
             MainForm.MainToolTip.SetToolTip(MainForm.TimeCodeBar, "Jump Back/Forward '<' / '>', Frame Back/Forward 'M' '/'")
             MainForm.MainToolTip.SetToolTip(MainForm.TrackBar2, "Speed - '+' / '-'")

@@ -271,6 +271,30 @@ Namespace My
                 Me("MirorBack") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("4")>  _
+        Public Property MaxThreads() As Integer
+            Get
+                Return CType(Me("MaxThreads"),Integer)
+            End Get
+            Set
+                Me("MaxThreads") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("VLC")>  _
+        Public Property VideoPlayerType() As String
+            Get
+                Return CType(Me("VideoPlayerType"),String)
+            End Get
+            Set
+                Me("VideoPlayerType") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

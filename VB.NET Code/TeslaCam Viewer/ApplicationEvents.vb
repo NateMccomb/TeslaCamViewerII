@@ -19,12 +19,14 @@ Namespace My
         'Application.ProductVersion
         Private Sub MyApplication_Startup(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.ApplicationServices.StartupEventArgs) Handles Me.Startup
             StartTime = My.Computer.Clock.LocalTime
-            If Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Active Setup\Installed Components\{22d6f312-b0f6-11d0-94ab-0080c74c7e95}") Is Nothing Then
-                MsgBox("You need to have Windows Media Player Installed to run TeslaCam Viewer" + vbCrLf + "1. Open Apps and Features" + vbCrLf + "2. Click Programs and Features on the right" + vbCrLf + "3. Click Turn Windows features on or off" + vbCrLf + "4. Click the checkbox on Media Features", MsgBoxStyle.OkCancel, "ERROR")
-                'MainForm.Close()
-                End
-            Else
-                ' Key existed
+            If Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\VideoLAN\VLC") Is Nothing Or My.Settings.VideoPlayerType <> "VLC" Then
+                MsgBox("It's now recommended to have VLC 3.0+ installed for the best TeslaCam Viewer II experience." + vbCrLf + vbCrLf + "** Windows Media Player is still supported but requires all new files to be fixed before viewing.**", MsgBoxStyle.OkOnly, "Install VLC 3.0+")
+
+                If Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Active Setup\Installed Components\{22d6f312-b0f6-11d0-94ab-0080c74c7e95}") Is Nothing Then
+                    MsgBox("You need to have Windows Media Player or VLC Installed to run TeslaCam Viewer II" + vbCrLf + "1. Open Apps and Features" + vbCrLf + "2. Click Programs and Features on the right" + vbCrLf + "3. Click Turn Windows features on or off" + vbCrLf + "4. Click the checkbox on Media Features", MsgBoxStyle.OkCancel, "ERROR")
+                    'MainForm.Close()
+                    End
+                End If
             End If
             'MainForm.ProductVersion
         End Sub

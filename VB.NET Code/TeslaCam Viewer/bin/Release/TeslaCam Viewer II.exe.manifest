@@ -4,7 +4,7 @@
   <description asmv2:iconFile="favicon_32x32_hds_icon.ico" asmv2:publisher="Nate Mccomb" asmv2:product="TeslaCam Viewer" asmv2:supportUrl="https://github.com/NateMccomb/TeslaCamViewer" co.v1:errorReportUrl="https://github.com/NateMccomb/TeslaCamViewer/issues" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="TeslaCam Viewer II" version="2019.43.6.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="TeslaCam Viewer II" version="2019.46.4.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="TeslaCam Viewer II.exe" parameters="" />
   </entryPoint>
   <co.v1:useManifestForTrust xmlns="urn:schemas-microsoft-com:asm.v1" />
@@ -59,6 +59,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AxInterop.AXVLC.dll" size="36864">
+      <assemblyIdentity name="AxInterop.AXVLC" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>qaYttmt9J4dYcF+m7LYir1Gx+yE=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AxInterop.WMPLib.dll" size="61440">
       <assemblyIdentity name="AxInterop.WMPLib" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -66,7 +78,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>iKeZxCoJVfHSpeX279NaJu94lAw=</dsig:DigestValue>
+        <dsig:DigestValue>1TYMz95b9gFGNY+5UbBT4QTVdeQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Interop.AXVLC.dll" size="57344">
+      <assemblyIdentity name="Interop.AXVLC" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>1yOCB9aIp8jfAMglnvzGTg5c8Ys=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -78,29 +102,29 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>AO8LSL+nsUgxtE/u3XsavPAsW0E=</dsig:DigestValue>
+        <dsig:DigestValue>1Xnnha+ec0kzOxPVUlhB3uC75QA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TeslaCam Viewer II.exe" size="450488">
-      <assemblyIdentity name="TeslaCam Viewer II" version="2019.43.6.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TeslaCam Viewer II.exe" size="478136">
+      <assemblyIdentity name="TeslaCam Viewer II" version="2019.46.4.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>ClxjIalVrE0EX7QbHSy1XvohZvs=</dsig:DigestValue>
+        <dsig:DigestValue>bL+86S62tQpzSs3GRsyVMOV77u0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="app.config" size="6710">
+  <file name="app.config" size="6957">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>2RT+z1euLRIueK11J+DM156bgAY=</dsig:DigestValue>
+      <dsig:DigestValue>gKkJDnOuHlwxlKElGorG0XhzMvs=</dsig:DigestValue>
     </hash>
   </file>
   <file name="favicon_32x32_hds_icon.ico" size="21822">
@@ -121,13 +145,13 @@
       <dsig:DigestValue>p78L5wgPptP87JiUF8W0LDrScUc=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TeslaCam Viewer II.exe.config" size="6710">
+  <file name="TeslaCam Viewer II.exe.config" size="6957">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>2RT+z1euLRIueK11J+DM156bgAY=</dsig:DigestValue>
+      <dsig:DigestValue>gKkJDnOuHlwxlKElGorG0XhzMvs=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">

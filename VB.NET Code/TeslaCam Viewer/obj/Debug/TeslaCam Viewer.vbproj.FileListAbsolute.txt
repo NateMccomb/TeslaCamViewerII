@@ -85,4 +85,8 @@ D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug
 D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.exe
 D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.xml
 D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer II.pdb
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\Interop.AXVLC.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\bin\Release\AxInterop.AXVLC.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\Interop.AXVLC.dll
+D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\AxInterop.AXVLC.dll
 D:\Dropbox\TeslaCamViewer\source code\TeslaCam Viewer2\TeslaCam Viewer\obj\Debug\TeslaCam Viewer.vbprojAssemblyReference.cache

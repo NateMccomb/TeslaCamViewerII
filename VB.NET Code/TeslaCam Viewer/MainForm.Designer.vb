@@ -42,6 +42,17 @@ Partial Class MainForm
         Me.Last3MinutesPerFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Tv_ImgList = New System.Windows.Forms.ImageList(Me.components)
         Me.GroupBoxCONTROLS = New System.Windows.Forms.GroupBox()
+        Me.GroupBoxNewLayout = New System.Windows.Forms.GroupBox()
+        Me.CloseGroupboxNewLayout = New System.Windows.Forms.Label()
+        Me.SaveNewLayoutBtn = New System.Windows.Forms.Button()
+        Me.NewAspectHeight = New System.Windows.Forms.TextBox()
+        Me.NewAspectWidth = New System.Windows.Forms.TextBox()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.NewLayoutName = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.GBsubCONTROLS = New System.Windows.Forms.GroupBox()
         Me.GroupBoxExportSettings = New System.Windows.Forms.GroupBox()
         Me.RenderTotalTimeLabel = New System.Windows.Forms.Label()
@@ -79,11 +90,16 @@ Partial Class MainForm
         Me.BtnPAUSE = New System.Windows.Forms.Button()
         Me.AppSettingsButton = New System.Windows.Forms.Button()
         Me.SettingsMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.VideoPlayerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.VideoPlayerType = New System.Windows.Forms.ToolStripComboBox()
         Me.LayoutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportLayoutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportLayoutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LanguageSelection = New System.Windows.Forms.ToolStripComboBox()
+        Me.MaxNumberOfThreadsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OfThreadsUsedToFixFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MaxNumberOfThreads = New System.Windows.Forms.ToolStripTextBox()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.DownloadUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewStatsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -94,6 +110,7 @@ Partial Class MainForm
         Me.CustomIDToolStripTextBox = New System.Windows.Forms.ToolStripTextBox()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.GitHubToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.YouTubeTutorialToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TwitterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InstagramToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
@@ -106,6 +123,7 @@ Partial Class MainForm
         Me.CreatedByNateMccombToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCIDToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCIDCPUModelMotherboardSNToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.Disable244BugDetectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewLogFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ControlsSpeed = New System.Windows.Forms.Label()
@@ -122,17 +140,6 @@ Partial Class MainForm
         Me.TimeCodeBar = New System.Windows.Forms.TrackBar()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.GroupBoxNewLayout = New System.Windows.Forms.GroupBox()
-        Me.CloseGroupboxNewLayout = New System.Windows.Forms.Label()
-        Me.SaveNewLayoutBtn = New System.Windows.Forms.Button()
-        Me.NewAspectHeight = New System.Windows.Forms.TextBox()
-        Me.NewAspectWidth = New System.Windows.Forms.TextBox()
-        Me.Label11 = New System.Windows.Forms.Label()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.NewLayoutName = New System.Windows.Forms.TextBox()
-        Me.Label5 = New System.Windows.Forms.Label()
         Me.GroupBoxEXPLORER = New System.Windows.Forms.GroupBox()
         Me.CustomFolderGroupBox = New System.Windows.Forms.GroupBox()
         Me.CustomFolderCancelBTN = New System.Windows.Forms.Button()
@@ -162,24 +169,23 @@ Partial Class MainForm
         Me.ImportSettingsFileDialog = New System.Windows.Forms.OpenFileDialog()
         Me.ExportSettingsFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.MaxDurationsList = New System.Windows.Forms.ListBox()
-        Me.YouTubeTutorialToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PlayerPreview = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.PreviewPanel = New System.Windows.Forms.Panel()
+        Me.SentryBTN = New System.Windows.Forms.Button()
         Me.ExplorerMenuStrip.SuspendLayout()
         Me.GroupBoxCONTROLS.SuspendLayout()
+        Me.GroupBoxNewLayout.SuspendLayout()
         Me.GBsubCONTROLS.SuspendLayout()
         Me.GroupBoxExportSettings.SuspendLayout()
         Me.GroupBoxControlsWindow.SuspendLayout()
         Me.SettingsMenuStrip.SuspendLayout()
         CType(Me.TrackBar2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TimeCodeBar, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupBoxNewLayout.SuspendLayout()
         Me.GroupBoxEXPLORER.SuspendLayout()
         Me.CustomFolderGroupBox.SuspendLayout()
         Me.FixTeslaCamGroupBox.SuspendLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PREVIEWBox.SuspendLayout()
         CType(Me.EventTimeCodeBar, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PlayerPreview, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Tv_Explorer
@@ -311,9 +317,122 @@ Partial Class MainForm
         Me.GroupBoxCONTROLS.TabStop = False
         Me.GroupBoxCONTROLS.Text = "Controls"
         '
+        'GroupBoxNewLayout
+        '
+        Me.GroupBoxNewLayout.Controls.Add(Me.CloseGroupboxNewLayout)
+        Me.GroupBoxNewLayout.Controls.Add(Me.SaveNewLayoutBtn)
+        Me.GroupBoxNewLayout.Controls.Add(Me.NewAspectHeight)
+        Me.GroupBoxNewLayout.Controls.Add(Me.NewAspectWidth)
+        Me.GroupBoxNewLayout.Controls.Add(Me.Label11)
+        Me.GroupBoxNewLayout.Controls.Add(Me.Label10)
+        Me.GroupBoxNewLayout.Controls.Add(Me.Label9)
+        Me.GroupBoxNewLayout.Controls.Add(Me.Label8)
+        Me.GroupBoxNewLayout.Controls.Add(Me.NewLayoutName)
+        Me.GroupBoxNewLayout.Controls.Add(Me.Label5)
+        Me.GroupBoxNewLayout.ForeColor = System.Drawing.Color.White
+        Me.GroupBoxNewLayout.Location = New System.Drawing.Point(562, 9)
+        Me.GroupBoxNewLayout.Name = "GroupBoxNewLayout"
+        Me.GroupBoxNewLayout.Size = New System.Drawing.Size(314, 145)
+        Me.GroupBoxNewLayout.TabIndex = 30
+        Me.GroupBoxNewLayout.TabStop = False
+        Me.GroupBoxNewLayout.Text = "New Layout"
+        Me.GroupBoxNewLayout.Visible = False
+        '
+        'CloseGroupboxNewLayout
+        '
+        Me.CloseGroupboxNewLayout.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.CloseGroupboxNewLayout.AutoSize = True
+        Me.CloseGroupboxNewLayout.BackColor = System.Drawing.Color.Red
+        Me.CloseGroupboxNewLayout.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CloseGroupboxNewLayout.Location = New System.Drawing.Point(297, 0)
+        Me.CloseGroupboxNewLayout.Name = "CloseGroupboxNewLayout"
+        Me.CloseGroupboxNewLayout.Size = New System.Drawing.Size(11, 12)
+        Me.CloseGroupboxNewLayout.TabIndex = 28
+        Me.CloseGroupboxNewLayout.Text = "X"
+        '
+        'SaveNewLayoutBtn
+        '
+        Me.SaveNewLayoutBtn.Enabled = False
+        Me.SaveNewLayoutBtn.ForeColor = System.Drawing.Color.Black
+        Me.SaveNewLayoutBtn.Location = New System.Drawing.Point(208, 112)
+        Me.SaveNewLayoutBtn.Name = "SaveNewLayoutBtn"
+        Me.SaveNewLayoutBtn.Size = New System.Drawing.Size(75, 23)
+        Me.SaveNewLayoutBtn.TabIndex = 27
+        Me.SaveNewLayoutBtn.Text = "Save"
+        Me.SaveNewLayoutBtn.UseVisualStyleBackColor = True
+        '
+        'NewAspectHeight
+        '
+        Me.NewAspectHeight.Location = New System.Drawing.Point(185, 59)
+        Me.NewAspectHeight.Name = "NewAspectHeight"
+        Me.NewAspectHeight.Size = New System.Drawing.Size(43, 20)
+        Me.NewAspectHeight.TabIndex = 7
+        '
+        'NewAspectWidth
+        '
+        Me.NewAspectWidth.Location = New System.Drawing.Point(95, 59)
+        Me.NewAspectWidth.Name = "NewAspectWidth"
+        Me.NewAspectWidth.Size = New System.Drawing.Size(43, 20)
+        Me.NewAspectWidth.TabIndex = 6
+        '
+        'Label11
+        '
+        Me.Label11.Location = New System.Drawing.Point(14, 84)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(267, 27)
+        Me.Label11.TabIndex = 5
+        Me.Label11.Text = "The proportional relationship between the layout width and layout height. 4:3 16:" &
+    "9 ..."
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(61, 62)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(35, 13)
+        Me.Label10.TabIndex = 4
+        Me.Label10.Text = "Width"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(149, 62)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(38, 13)
+        Me.Label9.TabIndex = 3
+        Me.Label9.Text = "Height"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.ForeColor = System.Drawing.Color.Black
+        Me.Label8.Location = New System.Drawing.Point(119, 43)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(68, 13)
+        Me.Label8.TabIndex = 2
+        Me.Label8.Text = "Aspect Ratio"
+        '
+        'NewLayoutName
+        '
+        Me.NewLayoutName.Location = New System.Drawing.Point(114, 17)
+        Me.NewLayoutName.Name = "NewLayoutName"
+        Me.NewLayoutName.Size = New System.Drawing.Size(137, 20)
+        Me.NewLayoutName.TabIndex = 1
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.ForeColor = System.Drawing.Color.Black
+        Me.Label5.Location = New System.Drawing.Point(45, 22)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(70, 13)
+        Me.Label5.TabIndex = 0
+        Me.Label5.Text = "Layout Name"
+        '
         'GBsubCONTROLS
         '
         Me.GBsubCONTROLS.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.GBsubCONTROLS.Controls.Add(Me.SentryBTN)
         Me.GBsubCONTROLS.Controls.Add(Me.GroupBoxExportSettings)
         Me.GBsubCONTROLS.Controls.Add(Me.GroupBoxControlsWindow)
         Me.GBsubCONTROLS.Controls.Add(Me.RemoveLayoutBtn)
@@ -365,7 +484,7 @@ Partial Class MainForm
         Me.GroupBoxExportSettings.Controls.Add(Me.MirrorLREnable)
         Me.GroupBoxExportSettings.Controls.Add(Me.CloseGroupboxSettings)
         Me.GroupBoxExportSettings.ForeColor = System.Drawing.Color.White
-        Me.GroupBoxExportSettings.Location = New System.Drawing.Point(375, 11)
+        Me.GroupBoxExportSettings.Location = New System.Drawing.Point(406, 11)
         Me.GroupBoxExportSettings.Name = "GroupBoxExportSettings"
         Me.GroupBoxExportSettings.Size = New System.Drawing.Size(195, 135)
         Me.GroupBoxExportSettings.TabIndex = 26
@@ -789,15 +908,28 @@ Partial Class MainForm
         '
         'SettingsMenuStrip
         '
-        Me.SettingsMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LayoutsToolStripMenuItem, Me.LanToolStripMenuItem, Me.ToolStripSeparator2, Me.DownloadUpdateToolStripMenuItem, Me.ViewStatsToolStripMenuItem, Me.ToolStripSeparator3, Me.GitHubToolStripMenuItem, Me.YouTubeTutorialToolStripMenuItem, Me.TwitterToolStripMenuItem, Me.InstagramToolStripMenuItem, Me.ToolStripSeparator4, Me.ReportABugToolStripMenuItem, Me.FeedBackToolStripMenuItem, Me.DonateToolStripMenuItem, Me.ToolStripSeparator5, Me.AboutToolStripMenuItem, Me.Disable244BugDetectToolStripMenuItem, Me.ViewLogFilesToolStripMenuItem})
+        Me.SettingsMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VideoPlayerToolStripMenuItem, Me.LayoutsToolStripMenuItem, Me.LanToolStripMenuItem, Me.MaxNumberOfThreadsToolStripMenuItem, Me.ToolStripSeparator2, Me.DownloadUpdateToolStripMenuItem, Me.ViewStatsToolStripMenuItem, Me.ToolStripSeparator3, Me.GitHubToolStripMenuItem, Me.YouTubeTutorialToolStripMenuItem, Me.TwitterToolStripMenuItem, Me.InstagramToolStripMenuItem, Me.ToolStripSeparator4, Me.ReportABugToolStripMenuItem, Me.FeedBackToolStripMenuItem, Me.DonateToolStripMenuItem, Me.ToolStripSeparator5, Me.AboutToolStripMenuItem, Me.Disable244BugDetectToolStripMenuItem, Me.ViewLogFilesToolStripMenuItem})
         Me.SettingsMenuStrip.Name = "SettingsMenuStrip"
-        Me.SettingsMenuStrip.Size = New System.Drawing.Size(198, 336)
+        Me.SettingsMenuStrip.Size = New System.Drawing.Size(226, 380)
+        '
+        'VideoPlayerToolStripMenuItem
+        '
+        Me.VideoPlayerToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VideoPlayerType})
+        Me.VideoPlayerToolStripMenuItem.Name = "VideoPlayerToolStripMenuItem"
+        Me.VideoPlayerToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
+        Me.VideoPlayerToolStripMenuItem.Text = "Video Player"
+        '
+        'VideoPlayerType
+        '
+        Me.VideoPlayerType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.VideoPlayerType.Name = "VideoPlayerType"
+        Me.VideoPlayerType.Size = New System.Drawing.Size(121, 23)
         '
         'LayoutsToolStripMenuItem
         '
         Me.LayoutsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportLayoutsToolStripMenuItem, Me.ExportLayoutsToolStripMenuItem})
         Me.LayoutsToolStripMenuItem.Name = "LayoutsToolStripMenuItem"
-        Me.LayoutsToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.LayoutsToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.LayoutsToolStripMenuItem.Text = "Layouts"
         '
         'ImportLayoutsToolStripMenuItem
@@ -816,7 +948,7 @@ Partial Class MainForm
         '
         Me.LanToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LanguageSelection})
         Me.LanToolStripMenuItem.Name = "LanToolStripMenuItem"
-        Me.LanToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.LanToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.LanToolStripMenuItem.Text = "Language"
         Me.LanToolStripMenuItem.Visible = False
         '
@@ -827,22 +959,41 @@ Partial Class MainForm
         Me.LanguageSelection.Size = New System.Drawing.Size(121, 23)
         Me.LanguageSelection.Text = "English"
         '
+        'MaxNumberOfThreadsToolStripMenuItem
+        '
+        Me.MaxNumberOfThreadsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OfThreadsUsedToFixFilesToolStripMenuItem, Me.MaxNumberOfThreads})
+        Me.MaxNumberOfThreadsToolStripMenuItem.Name = "MaxNumberOfThreadsToolStripMenuItem"
+        Me.MaxNumberOfThreadsToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
+        Me.MaxNumberOfThreadsToolStripMenuItem.Text = "Thread Count for Fixing Files"
+        '
+        'OfThreadsUsedToFixFilesToolStripMenuItem
+        '
+        Me.OfThreadsUsedToFixFilesToolStripMenuItem.Name = "OfThreadsUsedToFixFilesToolStripMenuItem"
+        Me.OfThreadsUsedToFixFilesToolStripMenuItem.Size = New System.Drawing.Size(229, 22)
+        Me.OfThreadsUsedToFixFilesToolStripMenuItem.Text = "# Of Threads Used To Fix Files"
+        '
+        'MaxNumberOfThreads
+        '
+        Me.MaxNumberOfThreads.Name = "MaxNumberOfThreads"
+        Me.MaxNumberOfThreads.Size = New System.Drawing.Size(100, 23)
+        Me.MaxNumberOfThreads.Text = "0"
+        '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(222, 6)
         '
         'DownloadUpdateToolStripMenuItem
         '
         Me.DownloadUpdateToolStripMenuItem.Name = "DownloadUpdateToolStripMenuItem"
-        Me.DownloadUpdateToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.DownloadUpdateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.DownloadUpdateToolStripMenuItem.Text = "Download Update"
         '
         'ViewStatsToolStripMenuItem
         '
         Me.ViewStatsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.YourIDToolStripMenuItem, Me.ToolStripSeparator7, Me.CopyToolStripMenuItem1, Me.ToolStripSeparator6, Me.CustomIDToolStripTextBox})
         Me.ViewStatsToolStripMenuItem.Name = "ViewStatsToolStripMenuItem"
-        Me.ViewStatsToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.ViewStatsToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.ViewStatsToolStripMenuItem.Text = "View Stats"
         '
         'YourIDToolStripMenuItem
@@ -876,59 +1027,65 @@ Partial Class MainForm
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(222, 6)
         '
         'GitHubToolStripMenuItem
         '
         Me.GitHubToolStripMenuItem.Name = "GitHubToolStripMenuItem"
-        Me.GitHubToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.GitHubToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.GitHubToolStripMenuItem.Text = "GitHub"
+        '
+        'YouTubeTutorialToolStripMenuItem
+        '
+        Me.YouTubeTutorialToolStripMenuItem.Name = "YouTubeTutorialToolStripMenuItem"
+        Me.YouTubeTutorialToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
+        Me.YouTubeTutorialToolStripMenuItem.Text = "YouTube Tutorial"
         '
         'TwitterToolStripMenuItem
         '
         Me.TwitterToolStripMenuItem.Name = "TwitterToolStripMenuItem"
-        Me.TwitterToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.TwitterToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.TwitterToolStripMenuItem.Text = "Twitter"
         '
         'InstagramToolStripMenuItem
         '
         Me.InstagramToolStripMenuItem.Name = "InstagramToolStripMenuItem"
-        Me.InstagramToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.InstagramToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.InstagramToolStripMenuItem.Text = "Instagram"
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(222, 6)
         '
         'ReportABugToolStripMenuItem
         '
         Me.ReportABugToolStripMenuItem.Name = "ReportABugToolStripMenuItem"
-        Me.ReportABugToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.ReportABugToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.ReportABugToolStripMenuItem.Text = "Report A Bug"
         '
         'FeedBackToolStripMenuItem
         '
         Me.FeedBackToolStripMenuItem.Name = "FeedBackToolStripMenuItem"
-        Me.FeedBackToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.FeedBackToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.FeedBackToolStripMenuItem.Text = "Feedback"
         '
         'DonateToolStripMenuItem
         '
         Me.DonateToolStripMenuItem.Name = "DonateToolStripMenuItem"
-        Me.DonateToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.DonateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.DonateToolStripMenuItem.Text = "Donate"
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(222, 6)
         '
         'AboutToolStripMenuItem
         '
-        Me.AboutToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VersionToolStripMenuItem, Me.CreatedByNateMccombToolStripMenuItem, Me.PCIDToolStripMenuItem, Me.PCIDCPUModelMotherboardSNToolStripMenuItem})
+        Me.AboutToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VersionToolStripMenuItem, Me.CreatedByNateMccombToolStripMenuItem, Me.PCIDToolStripMenuItem, Me.PCIDCPUModelMotherboardSNToolStripMenuItem, Me.ToolStripSeparator9})
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.AboutToolStripMenuItem.Text = "About"
         '
         'VersionToolStripMenuItem
@@ -955,16 +1112,21 @@ Partial Class MainForm
         Me.PCIDCPUModelMotherboardSNToolStripMenuItem.Size = New System.Drawing.Size(316, 22)
         Me.PCIDCPUModelMotherboardSNToolStripMenuItem.Text = "PC ID = 'CPUID'+'Motherboard SerialNumber'"
         '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(313, 6)
+        '
         'Disable244BugDetectToolStripMenuItem
         '
         Me.Disable244BugDetectToolStripMenuItem.Name = "Disable244BugDetectToolStripMenuItem"
-        Me.Disable244BugDetectToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.Disable244BugDetectToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.Disable244BugDetectToolStripMenuItem.Text = "Disable 24.4 Bug Detect"
         '
         'ViewLogFilesToolStripMenuItem
         '
         Me.ViewLogFilesToolStripMenuItem.Name = "ViewLogFilesToolStripMenuItem"
-        Me.ViewLogFilesToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
+        Me.ViewLogFilesToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
         Me.ViewLogFilesToolStripMenuItem.Text = "View Log Files"
         '
         'ControlsSpeed
@@ -1157,121 +1319,10 @@ Partial Class MainForm
         Me.Label1.TabIndex = 8
         Me.Label1.Text = "1x"
         '
-        'GroupBoxNewLayout
-        '
-        Me.GroupBoxNewLayout.Controls.Add(Me.CloseGroupboxNewLayout)
-        Me.GroupBoxNewLayout.Controls.Add(Me.SaveNewLayoutBtn)
-        Me.GroupBoxNewLayout.Controls.Add(Me.NewAspectHeight)
-        Me.GroupBoxNewLayout.Controls.Add(Me.NewAspectWidth)
-        Me.GroupBoxNewLayout.Controls.Add(Me.Label11)
-        Me.GroupBoxNewLayout.Controls.Add(Me.Label10)
-        Me.GroupBoxNewLayout.Controls.Add(Me.Label9)
-        Me.GroupBoxNewLayout.Controls.Add(Me.Label8)
-        Me.GroupBoxNewLayout.Controls.Add(Me.NewLayoutName)
-        Me.GroupBoxNewLayout.Controls.Add(Me.Label5)
-        Me.GroupBoxNewLayout.ForeColor = System.Drawing.Color.White
-        Me.GroupBoxNewLayout.Location = New System.Drawing.Point(562, 9)
-        Me.GroupBoxNewLayout.Name = "GroupBoxNewLayout"
-        Me.GroupBoxNewLayout.Size = New System.Drawing.Size(314, 145)
-        Me.GroupBoxNewLayout.TabIndex = 30
-        Me.GroupBoxNewLayout.TabStop = False
-        Me.GroupBoxNewLayout.Text = "New Layout"
-        Me.GroupBoxNewLayout.Visible = False
-        '
-        'CloseGroupboxNewLayout
-        '
-        Me.CloseGroupboxNewLayout.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.CloseGroupboxNewLayout.AutoSize = True
-        Me.CloseGroupboxNewLayout.BackColor = System.Drawing.Color.Red
-        Me.CloseGroupboxNewLayout.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CloseGroupboxNewLayout.Location = New System.Drawing.Point(297, 0)
-        Me.CloseGroupboxNewLayout.Name = "CloseGroupboxNewLayout"
-        Me.CloseGroupboxNewLayout.Size = New System.Drawing.Size(11, 12)
-        Me.CloseGroupboxNewLayout.TabIndex = 28
-        Me.CloseGroupboxNewLayout.Text = "X"
-        '
-        'SaveNewLayoutBtn
-        '
-        Me.SaveNewLayoutBtn.Enabled = False
-        Me.SaveNewLayoutBtn.ForeColor = System.Drawing.Color.Black
-        Me.SaveNewLayoutBtn.Location = New System.Drawing.Point(208, 112)
-        Me.SaveNewLayoutBtn.Name = "SaveNewLayoutBtn"
-        Me.SaveNewLayoutBtn.Size = New System.Drawing.Size(75, 23)
-        Me.SaveNewLayoutBtn.TabIndex = 27
-        Me.SaveNewLayoutBtn.Text = "Save"
-        Me.SaveNewLayoutBtn.UseVisualStyleBackColor = True
-        '
-        'NewAspectHeight
-        '
-        Me.NewAspectHeight.Location = New System.Drawing.Point(185, 59)
-        Me.NewAspectHeight.Name = "NewAspectHeight"
-        Me.NewAspectHeight.Size = New System.Drawing.Size(43, 20)
-        Me.NewAspectHeight.TabIndex = 7
-        '
-        'NewAspectWidth
-        '
-        Me.NewAspectWidth.Location = New System.Drawing.Point(95, 59)
-        Me.NewAspectWidth.Name = "NewAspectWidth"
-        Me.NewAspectWidth.Size = New System.Drawing.Size(43, 20)
-        Me.NewAspectWidth.TabIndex = 6
-        '
-        'Label11
-        '
-        Me.Label11.Location = New System.Drawing.Point(14, 84)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(267, 27)
-        Me.Label11.TabIndex = 5
-        Me.Label11.Text = "The proportional relationship between the layout width and layout height. 4:3 16:" &
-    "9 ..."
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(61, 62)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(35, 13)
-        Me.Label10.TabIndex = 4
-        Me.Label10.Text = "Width"
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(149, 62)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(38, 13)
-        Me.Label9.TabIndex = 3
-        Me.Label9.Text = "Height"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(119, 43)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(68, 13)
-        Me.Label8.TabIndex = 2
-        Me.Label8.Text = "Aspect Ratio"
-        '
-        'NewLayoutName
-        '
-        Me.NewLayoutName.Location = New System.Drawing.Point(114, 17)
-        Me.NewLayoutName.Name = "NewLayoutName"
-        Me.NewLayoutName.Size = New System.Drawing.Size(137, 20)
-        Me.NewLayoutName.TabIndex = 1
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.ForeColor = System.Drawing.Color.Black
-        Me.Label5.Location = New System.Drawing.Point(45, 22)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(70, 13)
-        Me.Label5.TabIndex = 0
-        Me.Label5.Text = "Layout Name"
-        '
         'GroupBoxEXPLORER
         '
         Me.GroupBoxEXPLORER.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.GroupBoxEXPLORER.Controls.Add(Me.AnalyzingFilesLabel)
         Me.GroupBoxEXPLORER.Controls.Add(Me.CustomFolderGroupBox)
         Me.GroupBoxEXPLORER.Controls.Add(Me.FixTeslaCamGroupBox)
         Me.GroupBoxEXPLORER.Controls.Add(Me.Tv_Explorer)
@@ -1417,7 +1468,7 @@ Partial Class MainForm
         'PREVIEWBox
         '
         Me.PREVIEWBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.PREVIEWBox.Controls.Add(Me.PlayerPreview)
+        Me.PREVIEWBox.Controls.Add(Me.PreviewPanel)
         Me.PREVIEWBox.Location = New System.Drawing.Point(246, 12)
         Me.PREVIEWBox.Name = "PREVIEWBox"
         Me.PREVIEWBox.Size = New System.Drawing.Size(400, 320)
@@ -1504,11 +1555,11 @@ Partial Class MainForm
         Me.AnalyzingFilesLabel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.AnalyzingFilesLabel.BackColor = System.Drawing.Color.Transparent
-        Me.AnalyzingFilesLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 21.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AnalyzingFilesLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.AnalyzingFilesLabel.ForeColor = System.Drawing.Color.White
-        Me.AnalyzingFilesLabel.Location = New System.Drawing.Point(3, 93)
+        Me.AnalyzingFilesLabel.Location = New System.Drawing.Point(12, 14)
         Me.AnalyzingFilesLabel.Name = "AnalyzingFilesLabel"
-        Me.AnalyzingFilesLabel.Size = New System.Drawing.Size(912, 100)
+        Me.AnalyzingFilesLabel.Size = New System.Drawing.Size(305, 145)
         Me.AnalyzingFilesLabel.TabIndex = 23
         Me.AnalyzingFilesLabel.Text = "Analyzing Files"
         Me.AnalyzingFilesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1520,7 +1571,6 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.EventTimeCodeBar.BackColor = System.Drawing.Color.DimGray
         Me.EventTimeCodeBar.Cursor = System.Windows.Forms.Cursors.NoMoveHoriz
-        Me.EventTimeCodeBar.Enabled = False
         Me.EventTimeCodeBar.LargeChange = 50
         Me.EventTimeCodeBar.Location = New System.Drawing.Point(2, 302)
         Me.EventTimeCodeBar.Name = "EventTimeCodeBar"
@@ -1573,22 +1623,22 @@ Partial Class MainForm
         Me.MaxDurationsList.TabIndex = 31
         Me.MaxDurationsList.Visible = False
         '
-        'YouTubeTutorialToolStripMenuItem
+        'PreviewPanel
         '
-        Me.YouTubeTutorialToolStripMenuItem.Name = "YouTubeTutorialToolStripMenuItem"
-        Me.YouTubeTutorialToolStripMenuItem.Size = New System.Drawing.Size(197, 22)
-        Me.YouTubeTutorialToolStripMenuItem.Text = "YouTube Tutorial"
+        Me.PreviewPanel.Location = New System.Drawing.Point(3, 13)
+        Me.PreviewPanel.Name = "PreviewPanel"
+        Me.PreviewPanel.Size = New System.Drawing.Size(394, 301)
+        Me.PreviewPanel.TabIndex = 0
         '
-        'PlayerPreview
+        'SentryBTN
         '
-        Me.PlayerPreview.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PlayerPreview.Enabled = True
-        Me.PlayerPreview.Location = New System.Drawing.Point(3, 16)
-        Me.PlayerPreview.Name = "PlayerPreview"
-        Me.PlayerPreview.OcxState = CType(resources.GetObject("PlayerPreview.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.PlayerPreview.Size = New System.Drawing.Size(394, 301)
-        Me.PlayerPreview.TabIndex = 0
-        Me.PlayerPreview.TabStop = False
+        Me.SentryBTN.ForeColor = System.Drawing.Color.Black
+        Me.SentryBTN.Location = New System.Drawing.Point(207, 57)
+        Me.SentryBTN.Name = "SentryBTN"
+        Me.SentryBTN.Size = New System.Drawing.Size(73, 23)
+        Me.SentryBTN.TabIndex = 30
+        Me.SentryBTN.Text = "Sentry"
+        Me.SentryBTN.UseVisualStyleBackColor = True
         '
         'MainForm
         '
@@ -1599,7 +1649,6 @@ Partial Class MainForm
         Me.ClientSize = New System.Drawing.Size(914, 491)
         Me.Controls.Add(Me.MaxDurationsList)
         Me.Controls.Add(Me.VideoRendering)
-        Me.Controls.Add(Me.AnalyzingFilesLabel)
         Me.Controls.Add(Me.Panel)
         Me.Controls.Add(Me.EventSentryModeMarker)
         Me.Controls.Add(Me.FFmpegOutput)
@@ -1618,6 +1667,8 @@ Partial Class MainForm
         Me.Text = "TeslaCam Viewer II "
         Me.ExplorerMenuStrip.ResumeLayout(False)
         Me.GroupBoxCONTROLS.ResumeLayout(False)
+        Me.GroupBoxNewLayout.ResumeLayout(False)
+        Me.GroupBoxNewLayout.PerformLayout()
         Me.GBsubCONTROLS.ResumeLayout(False)
         Me.GBsubCONTROLS.PerformLayout()
         Me.GroupBoxExportSettings.ResumeLayout(False)
@@ -1626,8 +1677,6 @@ Partial Class MainForm
         Me.SettingsMenuStrip.ResumeLayout(False)
         CType(Me.TrackBar2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TimeCodeBar, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBoxNewLayout.ResumeLayout(False)
-        Me.GroupBoxNewLayout.PerformLayout()
         Me.GroupBoxEXPLORER.ResumeLayout(False)
         Me.CustomFolderGroupBox.ResumeLayout(False)
         Me.CustomFolderGroupBox.PerformLayout()
@@ -1636,7 +1685,6 @@ Partial Class MainForm
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PREVIEWBox.ResumeLayout(False)
         CType(Me.EventTimeCodeBar, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PlayerPreview, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1659,7 +1707,6 @@ Partial Class MainForm
     Friend WithEvents BtnPLAY As Button
     Friend WithEvents BtnREVERSE As Button
     Friend WithEvents PREVIEWBox As GroupBox
-    Friend WithEvents PlayerPreview As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents GroupBoxEXPLORER As GroupBox
     Friend WithEvents CustomFolderBrowserDialog As FolderBrowserDialog
     Friend WithEvents Donation As Button
@@ -1780,4 +1827,12 @@ Partial Class MainForm
     Friend WithEvents ConfirmToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ViewLogFilesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents YouTubeTutorialToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents MaxNumberOfThreadsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents MaxNumberOfThreads As ToolStripTextBox
+    Friend WithEvents VideoPlayerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents VideoPlayerType As ToolStripComboBox
+    Friend WithEvents OfThreadsUsedToFixFilesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents PreviewPanel As Panel
+    Friend WithEvents SentryBTN As Button
 End Class
