@@ -14,6 +14,8 @@ Install
 
 ### Help support Nate in making future improvements though PayPal [![Donate](https://github.com/NateMccomb/TeslaCamViewer/raw/master/TeslaCam%20Viewer/Resources/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8UKFUQCU9476N&source=url)
 
+![VLC](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/VB.NET%20Code/TeslaCam%20Viewer/Resources/TeslaCamViewer-VLC.png)
+
 Version 2019.46.6.1 - VLC Support Added
 ======================================
 #### .NET Framework 4.5 must be installed
