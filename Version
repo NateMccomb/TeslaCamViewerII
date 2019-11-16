@@ -1,4 +1,4 @@
-2019.44.0.0
+2019.46.6.0
 
 Updates
 -------------
@@ -18,6 +18,7 @@ Beta Release - 40.6.0
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed minor bugs - 46.6.0
 Fixed VLC crashing bug due to send Stop to an already stopped player - 46.5.1
 Fixed minor bugs - 46.4.0
 Fixed minor bugs - 43.6.0
