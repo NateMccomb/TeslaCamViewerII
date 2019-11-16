@@ -14,23 +14,17 @@ Install
 
 ### Help support Nate in making future improvements though PayPal [![Donate](https://github.com/NateMccomb/TeslaCamViewer/raw/master/TeslaCam%20Viewer/Resources/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8UKFUQCU9476N&source=url)
 
-Version 2019.46.5.1 - VLC Support Added
+Version 2019.46.6.0 - VLC Support Added
 ======================================
 #### .NET Framework 3.5 must be installed
 
 ### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. Windows Meida Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue.
 
-## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2019.46.5.1.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
+## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2019.46.6.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
                     
-## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Standalone-TeslaCamViewer-2019.46.5.1.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
+## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Standalone-TeslaCamViewer-2019.46.6.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
 
-Version 2019.44.0.0 
-======================================
-## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Using the Re-encode feature will fix these issues.
-#### .NET Framework 3.5 must be installed
-## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2019.44.0.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
-                    
-## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Standalone-TeslaCamViewer-2019.44.0.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
+## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Use the Re-encode feature to fix these issues when using Windows Media Player as you default video player in TCV.
 
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) ` If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check out` [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810).
 
@@ -60,6 +54,7 @@ Features
 * Format drives for Fat32 and add TeslaCam / Viewer to drive
 * Choose or design custom view layouts for viewing / exporting
 * Export / Import custom view layouts
+* Supports both VLC and Windows Media Player if found installed on PC
 
 
 Known Bugs
