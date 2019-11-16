@@ -2,6 +2,7 @@
 
 Updates
 -------------
+Switched to .NET 4.5 instead of .NET 3.5 - 46.6.1
 Added TeslaCamViewer.com - 46.5.1
 Added VLC - 46.4.0
 Added Max Thread Count option for re-encoding files - 46.4.0
