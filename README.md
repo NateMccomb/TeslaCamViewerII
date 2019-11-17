@@ -31,7 +31,7 @@ Version 2019.46.6.1 - VLC Support Added
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) ` If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check out` [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810).
 
 
-## [Feature request or give user feedback here](https://docs.google.com/forms/d/e/1FAIpQLScl0Eg_RRAbHcJf2tBZ42SrP5RkOWo1xrL4O763WsmPCgqXWA/viewform)
+## [Feature request or give user feedback here](https://docs.google.com/forms/d/e/1FAIpQLScl0Eg_RRAbHcJf2tBZ42SrP5RkOWo1xrL4O763WsmPCgqXWA/viewform) Or send an email to TeslaCamViewer@gmail.com
 
 
 Features
