@@ -1,7 +1,8 @@
-2019.46.6.0
+2019.52.0.0
 
 Updates
 -------------
+Added Delete option in explorer when right clicking - 52.0.0
 Switched to .NET 4.5 instead of .NET 3.5 - 46.6.1
 Added TeslaCamViewer.com - 46.5.1
 Added VLC - 46.4.0
@@ -19,6 +20,7 @@ Beta Release - 40.6.0
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed minor bugs and updated VLC detection - 52.0.0
 Fixed minor bugs - 46.6.0
 Fixed VLC crashing bug due to send Stop to an already stopped player - 46.5.1
 Fixed minor bugs - 46.4.0
@@ -27,3 +29,4 @@ Fixed a few regional based bugs and addressed some other issues - 42.3.0
 Fixed minor bugs - 41.6.0
 
 TeslaCam Viewer is free but please donate!
+TeslaCamViewer.com
