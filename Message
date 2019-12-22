@@ -1,6 +1,7 @@
 Welcome to TeslaCam Viewer II!
-TeslaCam Viewer II - 2019.46.6.0
-VLC support has been added to TeslaCam Viewer. 
+TeslaCam Viewer II - 2019.52.0.0
+Updated how TCV detects VLC and if the correct version is installed. 
+Unable to find a way to point TCV to a standalone VLC directory so VLC 3.0+ must be installed to take advantage of it.
 
 VLC now allows you to view TeslaCam files instantly instead of needing to re-encode every file.
 Windows Media Player is still supported but it is recommended that you install VLC to get the best experience.
