@@ -1,8 +1,8 @@
-2019.52.0.0
+2019.52.1.0
 
 Updates
 -------------
-Added Delete option in explorer when right clicking - 52.0.0
+Added Delete option in explorer when right clicking - 52.1.0
 Switched to .NET 4.5 instead of .NET 3.5 - 46.6.1
 Added TeslaCamViewer.com - 46.5.1
 Added VLC - 46.4.0
