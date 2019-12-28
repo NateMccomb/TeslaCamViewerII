@@ -1,7 +1,8 @@
-2019.52.1.0
+2019.52.6.0
 
 Updates
 -------------
+Added Trash Can button to delete event currently being viewed - 52.6.0
 Added Delete option in explorer when right clicking - 52.1.0
 Switched to .NET 4.5 instead of .NET 3.5 - 46.6.1
 Added TeslaCamViewer.com - 46.5.1
@@ -20,6 +21,8 @@ Beta Release - 40.6.0
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed VLC crashing bug due to scrolling through main timeline to quickly - 52.6.0
+Fixed minor bug with VLC detection on Win32 machines - 52.6.0
 Fixed minor bugs and updated VLC detection - 52.0.0
 Fixed minor bugs - 46.6.0
 Fixed VLC crashing bug due to send Stop to an already stopped player - 46.5.1
