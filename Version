@@ -1,4 +1,4 @@
-2020.3.0.0
+2020.3.1.0
 
 Updates
 -------------
@@ -21,7 +21,7 @@ Beta Release - 40.6.0
 …………………………………………………………….
 Bug Fixes 
 -------------
-Fixed a minor bug with the new Sentry Button causing the Export function to not work - 3.0.0
+Fixed a minor bug with the new Sentry Button causing the Export function to not work - 3.1.0
 Fixed a minor bug with calculating Start Time/Duration when exporting - 3.0.0
 Fixed a few other minor issues - 3.0.0
 Fixed VLC crashing bug due to scrolling through main timeline to quickly - 52.6.0
