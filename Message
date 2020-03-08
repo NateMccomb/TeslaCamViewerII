@@ -1,9 +1,12 @@
 Welcome to TeslaCam Viewer II!
-There is a new version of TeslaCam Viewer II available - 2020.3.1.0
+This update has been a little over due but it's now released. 2020.11.0.0
 
-Happy New Year!
-There have been a few bug fixes and improvements in the new 2020 update.
-Please make sure your viewer is up to date.
+Fixed issues when using the Sentry button.
+Fixed how TeslaCam Viewer II files are copied to a drive after formatting it.
+Increased "Analyzing Files" speed.
+New layouts have been added/included. New users will see then already added to the Camera Layouts but users already using TCV will need to import "Layout Config.TeslaCam" under "Application Settings -> Layouts -> Import Layouts" to use them. Users can also add them by resetting all settings (hold SHIFT while starting TCV)
 
+Added a new feature!
+You can now join previously exported clips into one video to tell a story using "Join Events". Join Events can be found under Application Settings (gear icon) or from the Join Events icon in the Export Settings option.
 Now available at:
 https://www.TeslaCamViewer.com
