@@ -1,26 +1,21 @@
-2020.3.1.0
+2020.11.0.0
 
 Updates
 -------------
+New layouts have been added/included - 11.0.0 
+You can now join previously exported clips into one video to tell a story using "Join Events" - 11.0.0
 Added Trash Can button to delete event currently being viewed - 52.6.0
 Added Delete option in explorer when right clicking - 52.1.0
 Switched to .NET 4.5 instead of .NET 3.5 - 46.6.1
 Added TeslaCamViewer.com - 46.5.1
 Added VLC - 46.4.0
-Added Max Thread Count option for re-encoding files - 46.4.0
-Added support for moving In/Out Markers - 44.0.0
-Added support for moving Main Event Timeline - 44.0.0
-Added Stats for TeslaCam Viewer II - 43.5.0
-Format USB drive as FAT32 plus adds TeslaCam / TeslaCam Viewer - 43.5.0
-Choose a custom folder by Address option added - 43.5.0
-Import/Export Layout Settings - 43.5.0
-Export! The Export feature is now available - 43.0.0
-Added a message option to inform users of new features or options - 42.3.0
-Beta Release - 40.6.0
 
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed issues when using the Sentry button - 11.0.0
+Fixed how TeslaCam Viewer II files are copied to a drive after formatting it - 11.0.0
+Increased "Analyzing Files" speed - 11.0.0
 Fixed a minor bug with the new Sentry Button causing the Export function to not work - 3.1.0
 Fixed a minor bug with calculating Start Time/Duration when exporting - 3.0.0
 Fixed a few other minor issues - 3.0.0
@@ -30,9 +25,6 @@ Fixed minor bugs and updated VLC detection - 52.0.0
 Fixed minor bugs - 46.6.0
 Fixed VLC crashing bug due to send Stop to an already stopped player - 46.5.1
 Fixed minor bugs - 46.4.0
-Fixed minor bugs - 43.6.0
-Fixed a few regional based bugs and addressed some other issues - 42.3.0
-Fixed minor bugs - 41.6.0
 
 TeslaCam Viewer II is free but please donate!
 TeslaCamViewer.com
