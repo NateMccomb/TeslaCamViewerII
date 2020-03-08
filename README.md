@@ -57,6 +57,7 @@ Features
 * Choose or design custom view layouts for viewing / exporting
 * Export / Import custom view layouts
 * Supports both VLC and Windows Media Player if found installed on PC
+* Join previously exported clips into one video to tell a story (Join Events)
 
 
 Known Bugs
