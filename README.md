@@ -20,7 +20,8 @@ Version 2020.11.0.0 - VLC Supported
 ======================================
 #### .NET Framework 4.5 must be installed
 
-### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. When installing VLC make sure that "Web Plugins" & "ActiveX Plugin" are both checked as optional components you wish to install. Windows Meida Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue.
+### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. When installing VLC make sure that "Web Plugins" & "ActiveX Plugin" are both checked as optional components you wish to install. Windows Meida Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue. 
+#### Direct download links for VLC 3.0.8: [32bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win32/vlc-3.0.8-win32.exe) [64bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win64/vlc-3.0.8-win64.exe)
 
 ## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/Download/Installer-TeslaCamViewer-2020.11.0.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
                     
