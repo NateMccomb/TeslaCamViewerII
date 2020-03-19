@@ -1,12 +1,17 @@
 Welcome to TeslaCam Viewer II!
-This update has been a little over due but it's now released. 2020.11.0.0
+Check out the new Join Events feature in 2020.11.0.0
+You can now join previously exported clips into one video. 
 
-Fixed issues when using the Sentry button.
-Fixed how TeslaCam Viewer II files are copied to a drive after formatting it.
-Increased "Analyzing Files" speed.
-New layouts have been added/included. New users will see then already added to the Camera Layouts but users already using TCV will need to import "Layout Config.TeslaCam" under "Application Settings -> Layouts -> Import Layouts" to use them. Users can also add them by resetting all settings (hold SHIFT while starting TCV)
+First 'Export' each camera angle/layout after using the 'Red' and 'Green' markers to adjust the start and stop points of your new video to export. 
+Open 'Join Exported Events', this can be found under Application Settings (gear icon) or from the 'Join Events' icon in the 'Export Settings' option.
+Add each of your previously exported clips by clicking 'Add Videos' or by dragging and dropping them into the window. (Play order is top to bottom)
+Click 'Join All Files' to save all your clips into one video.
 
-Added a new feature!
-You can now join previously exported clips into one video to tell a story using "Join Events". Join Events can be found under Application Settings (gear icon) or from the Join Events icon in the Export Settings option.
+I'm currently working on adding a 'TrackMode' feature into TeslaCam Viewer for the P3D owners out there.
+You can view a small demo by clicking the 'YouTube Tutorials' button under App settings. 
+
+If you have "TeslaTrackMode" events that you are willing to share for software development, please contact me at TeslaCamViewer@Gmail.com
+
 Now available at:
 https://www.TeslaCamViewer.com
+
