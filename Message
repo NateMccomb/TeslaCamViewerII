@@ -1,17 +1,12 @@
 Welcome to TeslaCam Viewer II!
-Check out the new Join Events feature in 2020.11.0.0
-You can now join previously exported clips into one video. 
+2020.17.4.0 now adds support for the new "event.json" file that Tesla is now including in TeslaCam.
+When you hover over an event folder (YYYY-MM-DD_HH-MM-SS) you'll now see a Google Map with a pin and a description of the event.
+When hovering over a parent folder (SavedClips/SentryClips) you'll see a Google Map with pins of all event locations that can be found within that folder.
+Each different "Reason" type will show up as different color pin.
 
-First 'Export' each camera angle/layout after using the 'Red' and 'Green' markers to adjust the start and stop points of your new video to export. 
-Open 'Join Exported Events', this can be found under Application Settings (gear icon) or from the 'Join Events' icon in the 'Export Settings' option.
-Add each of your previously exported clips by clicking 'Add Videos' or by dragging and dropping them into the window. (Play order is top to bottom)
-Click 'Join All Files' to save all your clips into one video.
-
-I'm currently working on adding a 'TrackMode' feature into TeslaCam Viewer for the P3D owners out there.
-You can view a small demo by clicking the 'YouTube Tutorials' button under App settings. 
-
-If you have "TeslaTrackMode" events that you are willing to share for software development, please contact me at TeslaCamViewer@Gmail.com
+2020.17.4.0 also includes a TrackMode-Demo for those of you with a Tesla P3D and have saved TeslaTrackMode video/telemetry.
+A 'TeslaTrackMode' folder must be on your USB drive and "Save Video for Laps" must be enabled while in TrackMode to take advantage of this Demo.
+If you format your USB drive using TeslaCam Viewer II then it will add the folders needed to the root of your USB drive.
 
 Now available at:
 https://www.TeslaCamViewer.com
-
