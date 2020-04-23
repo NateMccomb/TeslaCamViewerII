@@ -27,6 +27,8 @@ Version 2020.17.4.0 - VLC Supported
                     
 ## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.17.4.0/Standalone-TeslaCamViewer-2020.17.4.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
 
+[Previously Released Versions of TeslaCam Viewer II](https://github.com/NateMccomb/TeslaCamViewerII/releases)
+
 ## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Use the Re-encode feature to fix these issues when using Windows Media Player as you default video player in TCV.
 
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) ` If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check out` [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810).
