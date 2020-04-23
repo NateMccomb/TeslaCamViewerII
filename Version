@@ -1,7 +1,9 @@
-2020.11.0.0
+2020.17.4.0
 
 Updates
 -------------
+Added support for event.json - 17.4.0
+Added some support for TrackMode (demo only) - 17.4.0
 New layouts have been added/included - 11.0.0 
 You can now join previously exported clips into one video to tell a story using "Join Events" - 11.0.0
 Added Trash Can button to delete event currently being viewed - 52.6.0
@@ -19,12 +21,6 @@ Increased "Analyzing Files" speed - 11.0.0
 Fixed a minor bug with the new Sentry Button causing the Export function to not work - 3.1.0
 Fixed a minor bug with calculating Start Time/Duration when exporting - 3.0.0
 Fixed a few other minor issues - 3.0.0
-Fixed VLC crashing bug due to scrolling through main timeline to quickly - 52.6.0
-Fixed minor bug with VLC detection on Win32 machines - 52.6.0
-Fixed minor bugs and updated VLC detection - 52.0.0
-Fixed minor bugs - 46.6.0
-Fixed VLC crashing bug due to send Stop to an already stopped player - 46.5.1
-Fixed minor bugs - 46.4.0
 
 TeslaCam Viewer II is free but please donate!
 TeslaCamViewer.com
