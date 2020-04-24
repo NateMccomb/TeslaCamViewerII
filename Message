@@ -1,10 +1,10 @@
 Welcome to TeslaCam Viewer II!
-2020.17.4.0 now adds support for the new "event.json" file that Tesla is now including in TeslaCam.
+2020.17.5.1 now adds support for the new "event.json" file that Tesla is now including in TeslaCam.
 When you hover over an event folder (YYYY-MM-DD_HH-MM-SS) you'll now see a Google Map with a pin and a description of the event.
 When hovering over a parent folder (SavedClips/SentryClips) you'll see a Google Map with pins of all event locations that can be found within that folder.
 Each different "Reason" type will show up as different color pin.
 
-2020.17.4.0 also includes a TrackMode-Demo for those of you with a Tesla P3D and have saved TeslaTrackMode video/telemetry.
+2020.17.5.1 also includes a TrackMode-Demo for those of you with a Tesla P3D and have saved TeslaTrackMode video/telemetry.
 A 'TeslaTrackMode' folder must be on your USB drive and "Save Video for Laps" must be enabled while in TrackMode to take advantage of this Demo.
 If you format your USB drive using TeslaCam Viewer II then it will add the folders needed to the root of your USB drive.
 
