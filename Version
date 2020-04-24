@@ -1,4 +1,4 @@
-2020.17.4.0
+2020.17.5.1
 
 Updates
 -------------
@@ -15,6 +15,7 @@ Added VLC - 46.4.0
 …………………………………………………………….
 Bug Fixes 
 -------------
+Fixed multiple installations when using installer - 17.5.1
 Fixed issues when using the Sentry button - 11.0.0
 Fixed how TeslaCam Viewer II files are copied to a drive after formatting it - 11.0.0
 Increased "Analyzing Files" speed - 11.0.0
