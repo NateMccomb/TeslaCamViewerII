@@ -29,7 +29,7 @@ Version 2020.17.5.1 - VLC Supported
 
 [Previously Released Versions of TeslaCam Viewer II](https://github.com/NateMccomb/TeslaCamViewerII/releases)
 
-## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Use the Re-encode feature to fix these issues when using Windows Media Player as you default video player in TCV.
+## `Tesla's software update 2019.24.4 has changed how the TeslaCam files are saved/encoded.` Use the Re-encode feature to fix these issues when using Windows Media Player as your default video player in TCV.
 
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) ` If TeslaCam Viewer crashes the first time you select a folder and no error messages pop up then check out` [This Link](https://github.com/NateMccomb/TeslaCamViewer/issues/2#issuecomment-514275810).
 
