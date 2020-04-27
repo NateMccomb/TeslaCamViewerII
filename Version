@@ -1,7 +1,10 @@
-2020.17.5.1
+2020.18.0.0
 
 Updates
 -------------
+Added more color defined pins in map - 18.0.0
+Added more maps & single event zoom options - 18.0.0
+Added TCVupdater.exe - 18.0.0
 Added support for event.json - 17.4.0
 Added some support for TrackMode (demo only) - 17.4.0
 New layouts have been added/included - 11.0.0 
