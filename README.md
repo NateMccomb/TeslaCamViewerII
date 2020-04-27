@@ -16,16 +16,16 @@ Install
 
 ![VLC](https://github.com/NateMccomb/TeslaCamViewerII/raw/master/VB.NET%20Code/TeslaCam%20Viewer/Resources/TeslaCamViewer-VLC.png)
 
-Version 2020.17.5.1 - VLC Supported
+Version 2020.18.0.0 - VLC Supported
 ======================================
 #### .NET Framework 4.5 must be installed
 
 ### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. When installing VLC make sure that "Web Plugins" & "ActiveX Plugin" are both checked as optional components you wish to install. Windows Meida Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue. 
 #### Direct download links for VLC 3.0.8: [32bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win32/vlc-3.0.8-win32.exe) or [64bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win64/vlc-3.0.8-win64.exe)
 
-## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.17.5.1/Installer-TeslaCamViewer-2020.17.5.1.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
+## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.18.0.0/Installer-TeslaCamViewer-2020.18.0.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
                     
-## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.17.5.1/Standalone-TeslaCamViewer-2020.17.5.1.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
+## [Standalone Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.18.0.0/Standalone-TeslaCamViewer-2020.18.0.0.zip) - Just unzip and run. Great for keeping a copy on your TeslaCam Flash Drive
 
 [Previously Released Versions of TeslaCam Viewer II](https://github.com/NateMccomb/TeslaCamViewerII/releases)
 
@@ -62,6 +62,7 @@ Features
 * Supports both VLC and Windows Media Player if found installed on PC
 * Join previously exported clips into one video to tell a story (Join Events)
 * Displays event.json data with Google Maps
+* Option to auto upgrade TeslaCam Viewer(2020.18+) 
 
 Known Bugs
 -------
