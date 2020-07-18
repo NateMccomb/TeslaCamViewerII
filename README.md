@@ -21,7 +21,7 @@ Version 2020.18.0.0 - VLC Supported
 #### .NET Framework 4.5 must be installed
 
 #### Direct download links for VLC 3.0.8: [32bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win32/vlc-3.0.8-win32.exe) or [64bit](http://download.videolan.org/pub/videolan/vlc/3.0.8/win64/vlc-3.0.8-win64.exe)
-### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. When installing VLC make sure that "Web Plugins" & "ActiveX Plugin" are both checked as optional components you wish to install. Windows Meida Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue. 
+### [Install VLC 3.X](https://www.videolan.org/vlc/download-windows.html) if not already installed to enable VLC as the video player. When installing VLC make sure that "Web Plugins" & "ActiveX Plugin" are both checked as optional components you wish to install. Windows Media Player is still supported but requires all TeslaCam files to be re-encoded before they play correctly, VLC fixes this issue. 
 
 
 ## [Windows Installer Version](https://github.com/NateMccomb/TeslaCamViewerII/releases/download/2020.18.0.0/Installer-TeslaCamViewer-2020.18.0.0.zip) - Includes .NET and everything needed for a full install. Start Menu and Desktop shortcuts created
@@ -45,7 +45,7 @@ Features
 * Custom layout so you can choose the look you like. 
 * Custom folder selection for quick access to archived TeslaCam video files.
 * Checks for software updates posted to GitHub automatically.
-* Quick pre-view of single video files while hovering
+* Quick preview of single video files while hovering
 * Adjustable playback speed for quick analysis of triggered Sentry Mode/Manual TeslaCam Events
 * Keyboard shortcuts for all controls.  (See popup when hovering over objects)
 * Auto saved Layout and Custom folder location. 
@@ -53,7 +53,7 @@ Features
           
 * Hold shift key while executing application to reset all settings.
 * Join and Export clips in to one file, Save As .mp4 .avi or .gif
-* Flip and/or mirror option for side cameras durring export
+* Flip and/or mirror option for side cameras during export
 * Trim video clips before saving file
 * Drag & Drop files/folders to add them to the Explorer tree
 * Adjust playback speed of exported video
